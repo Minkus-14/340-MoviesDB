@@ -242,8 +242,14 @@ genre_directors_from_app_py = [
 {
     "idDirector": 1,
     "directorName": "Quentin Tarantino",
-    "idGenre": 3,
-    "genreName": "Action",
+    "idGenre": 1,
+    "genreName": "Western",
+},
+{
+    "idDirector": 2,
+    "directorName": "Adam McKay",
+    "idGenre": 2,
+    "genreName": "Comedy",
 },
 {
     "idDirector": 1,
@@ -252,14 +258,8 @@ genre_directors_from_app_py = [
     "genreName": "Action",
 },
 {
-    "idDirector": 1,
-    "directorName": "Quentin Tarantino",
-    "idGenre": 3,
-    "genreName": "Action",
-},
-{
-    "idDirector": 1,
-    "directorName": "Quentin Tarantino",
+    "idDirector": 3,
+    "directorName": "Chad Stahelski",
     "idGenre": 3,
     "genreName": "Action",
 },
@@ -303,18 +303,18 @@ directors_from_app_py = [
 
 @app.route('/')
 def root():
-    return render_template("main.j2", movies=movies_from_app_py)
+    return render_template("movies.j2", movies=movies_from_app_py)
 
 @app.route('/movie_actors')
 def movie_actors():
     return render_template("movie_actors.j2", movie_actors=movie_actors_from_app_py)
 
 @app.route('/genre_actors')
-def movie_actors():
+def genre_actors():
     return render_template("genre_actors.j2", genre_actors=genre_actors_from_app_py)
 
 @app.route('/genre_directors')
-def movie_actors():
+def genre_directors():
     return render_template("genre_directors.j2", genre_directors=genre_directors_from_app_py)
 
 @app.route('/actors')
