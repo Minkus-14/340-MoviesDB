@@ -4,39 +4,31 @@
 </head>
 <body>
     <h1>MoviesDB</h1>
-    <h2>Movies</h2>
+    <h2>Actors</h2>
     <p>Links to other pages:</p>
-    <p><a href="{{ url_for('actors') }}">Actors</a>
+    <p><a href="{{ url_for('root') }}">Movies</a>
     <a href="{{ url_for('directors') }}">Directors</a>
     <a href="{{ url_for('genres') }}">Genres</a></p>
 </body>
 <table>
     <thead>
     <tr>
-        <th>Movie Name</th>
-        <th>Release Year</th>
-        <th>Rating</th>
-        <th>Length (min)</th>
-        <th>Genre</th>
+        <th>Actor ID</th>
         <th>Actor Name</th>
-        <th>Director Name</th>
+        <th>Age</th>
         <th>Edit</th>
         <th>Delete</th>
     </tr>
     <tbody>
-    {% for item in movies %}
+    {% for item in actors %}
     <tr>
-        <td>{{item['movieName']}}</td>
-        <td>{{item['releaseYear']}}</td>
-        <td>{{item['rating']}}</td>
-        <td>{{item['movieLength']}}</td>
-        <td>{{item['genreName']}}</td>
+        <td>{{item['idActor']}}</td>
         <td>{{item['actorName']}}</td>
-        <td>{{item['directorName']}}</td>
+        <td>{{item['age']}}</td>
         <td><input type="submit" value="Edit" name="action1"/></td>
         <td><input type="submit" value="Delete" name="action1"/></td>
     </tr>
     {% endfor %}
 </table>
-<input type="submit" value="Add Movie" name="action1"/>
+<input type="submit" value="Add Actor" name="action1"/>
 </html>
