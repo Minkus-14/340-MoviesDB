@@ -6,9 +6,15 @@
     <h1>MoviesDB</h1>
     <h2>Directors</h2>
     <p>Links to other pages:</p>
-    <p><a href="{{ url_for('root') }}">Movies</a>
-    <a href="{{ url_for('actors') }}">Actors</a>
-    <a href="{{ url_for('genres') }}">Genres</a></p>
+    <p>
+        <a href="{{ url_for('root') }}">Movies</a>
+        <a href="{{ url_for('actors') }}">Actors</a>
+        <a href="{{ url_for('directors') }}">Directors</a>
+        <a href="{{ url_for('genres') }}">Genres</a>
+        <a href="{{ url_for('movie_actors') }}">Movie Actors</a>
+        <a href="{{ url_for('genre_actors') }}">Genre Actors</a>
+        <a href="{{ url_for('genre_directors') }}">Genre Directors</a>
+    </p>
 </body>
 <table>
     <thead>

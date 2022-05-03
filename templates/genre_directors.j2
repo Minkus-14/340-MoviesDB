@@ -4,7 +4,7 @@
 </head>
 <body>
     <h1>MoviesDB</h1>
-    <h2>Genres</h2>
+    <h2>Genre Directors</h2>
     <p>Links to other pages:</p>
     <p>
         <a href="{{ url_for('root') }}">Movies</a>
@@ -15,18 +15,23 @@
         <a href="{{ url_for('genre_actors') }}">Genre Actors</a>
         <a href="{{ url_for('genre_directors') }}">Genre Directors</a>
     </p>
+
 </body>
 <table>
     <thead>
     <tr>
+        <th>Director ID</th>
+        <th>Director Name</th>
         <th>Genre ID</th>
         <th>Genre Name</th>
         <th>Edit</th>
         <th>Delete</th>
     </tr>
     <tbody>
-    {% for item in genres %}
+    {% for item in genre_directors %}
     <tr>
+        <td>{{item['idDirector']}}</td>
+        <td>{{item['directorName']}}</td>
         <td>{{item['idGenre']}}</td>
         <td>{{item['genreName']}}</td>
         <td><input type="submit" value="Edit" name="action1"/></td>
@@ -34,5 +39,6 @@
     </tr>
     {% endfor %}
 </table>
-<input type="submit" value="Add Genre" name="action1"/>
+<input type="submit" value="Add Entry" name="action1"/>
+<input type="submit" value="Remove Entry" name="action1"/>
 </html>

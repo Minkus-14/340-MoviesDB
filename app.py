@@ -1,9 +1,18 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, json, redirect, request
+from flask_mysqldb import MySQL
 import os
 
 # Configuration
 
 app = Flask(__name__)
+
+app.config['MYSQL_HOST'] = 'classmysql.engr.oregonstate.edu'
+app.config['MYSQL_USER'] = 'cs340_silverbj'
+app.config['MYSQL_PASSWORD'] = '2804' #last 4 of onid
+app.config['MYSQL_DB'] = 'cs340_silverbj'
+app.config['MYSQL_CURSORCLASS'] = "DictCursor"
+
+mysql = MySQL(app)
 
 # Data
 
@@ -103,6 +112,159 @@ actors_from_app_py = [
 },
 ]
 
+movie_actors_from_app_py = [
+{
+    "idMovie": 1,
+    "movieName": "Django Unchained",
+    "idActor": 1,
+    "actorName": "Jamie Foxx"
+},
+{
+    "idMovie": 1,
+    "movieName": "Django Unchained",
+    "idActor": 2,
+    "actorName": "Leonardo DiCaprio"
+},
+{
+    "idMovie": 2,
+    "movieName": "Anchorman: The Legend of Ron Burgundy",
+    "idActor": 3,
+    "actorName": "Will Ferrell"
+},
+{
+    "idMovie": 2,
+    "movieName": "Anchorman: The Legend of Ron Burgundy",
+    "idActor": 4,
+    "actorName": "Steve Carell"
+},
+{
+    "idMovie": 3,
+    "movieName": "Don't Look Up",
+    "idActor": 2,
+    "actorName": "Leonardo DiCaprio"
+},
+{
+    "idMovie": 3,
+    "movieName": "Don't Look Up",
+    "idActor": 5,
+    "actorName": "Jennifer Lawrence"
+},
+{
+    "idMovie": 4,
+    "movieName": "Kill Bill: Vol. 1",
+    "idActor": 6,
+    "actorName": "Uma Thurman"
+},
+{
+    "idMovie": 4,
+    "movieName": "Kill Bill: Vol. 1",
+    "idActor": 7,
+    "actorName": "David Carradine"
+},
+{
+    "idMovie": 5,
+    "movieName": "John Wick",
+    "idActor": 8,
+    "actorName": "Keanu Reeves"
+},
+{
+    "idMovie": 5,
+    "movieName": "John Wick",
+    "idActor": 9,
+    "actorName": "Michael Nyqvist"
+},
+]
+
+genre_actors_from_app_py = [
+{
+    "idGenre": 1,
+    "genreName": "Western",
+    "idActor": 1,
+    "actorName": "Jamie Foxx"
+},
+{
+    "idGenre": 1,
+    "genreName": "Western",
+    "idActor": 2,
+    "actorName": "Leonardo DiCaprio"
+},
+{
+    "idGenre": 2,
+    "genreName": "Comedy",
+    "idActor": 3,
+    "actorName": "Will Ferrell"
+},
+{
+    "idGenre": 2,
+    "genreName": "Comedy",
+    "idActor": 4,
+    "actorName": "Steve Carell"
+},
+{
+    "idGenre": 2,
+    "genreName": "Comedy",
+    "idActor": 2,
+    "actorName": "Leonardo DiCaprio"
+},
+{
+    "idGenre": 2,
+    "genreName": "Comedy",
+    "idActor": 5,
+    "actorName": "Jennifer Lawrence"
+},
+{
+    "idGenre": 3,
+    "genreName": "Action",
+    "idActor": 6,
+    "actorName": "Uma Thurman"
+},
+{
+    "idGenre": 3,
+    "genreName": "Action",
+    "idActor": 7,
+    "actorName": "David Carradine"
+},
+{
+    "idGenre": 3,
+    "genreName": "Action",
+    "idActor": 8,
+    "actorName": "Keanu Reeves"
+},
+{
+    "idGenre": 3,
+    "genreName": "Action",
+    "idActor": 9,
+    "actorName": "Michael Nyqvist"
+},
+]
+
+genre_directors_from_app_py = [
+{
+    "idDirector": 1,
+    "directorName": "Quentin Tarantino",
+    "idGenre": 3,
+    "genreName": "Action",
+},
+{
+    "idDirector": 1,
+    "directorName": "Quentin Tarantino",
+    "idGenre": 3,
+    "genreName": "Action",
+},
+{
+    "idDirector": 1,
+    "directorName": "Quentin Tarantino",
+    "idGenre": 3,
+    "genreName": "Action",
+},
+{
+    "idDirector": 1,
+    "directorName": "Quentin Tarantino",
+    "idGenre": 3,
+    "genreName": "Action",
+},
+]
+
 genres_from_app_py = [
 {
     "idGenre": 1,
@@ -143,9 +305,17 @@ directors_from_app_py = [
 def root():
     return render_template("main.j2", movies=movies_from_app_py)
 
-# @app.route('/movies')
-# def movies():
-#     return render_template("movies.j2", movies=movies_from_app_py)
+@app.route('/movie_actors')
+def movie_actors():
+    return render_template("movie_actors.j2", movie_actors=movie_actors_from_app_py)
+
+@app.route('/genre_actors')
+def movie_actors():
+    return render_template("genre_actors.j2", genre_actors=genre_actors_from_app_py)
+
+@app.route('/genre_directors')
+def movie_actors():
+    return render_template("genre_directors.j2", genre_directors=genre_directors_from_app_py)
 
 @app.route('/actors')
 def actors():
@@ -163,8 +333,8 @@ def genres():
 # Listener
 
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 9987))
+    # port = int(os.environ.get('PORT', 9987))
     #                                 ^^^^
     #              You can replace this number with any valid port
 
-    app.run(port=port, debug=True)
+    app.run(port=9987, debug=True)
