@@ -1,5 +1,13 @@
 <html>
 <head>
+    <style>
+        table, th, td
+        {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
     <title>MoviesDB</title>
 </head>
 <body>
@@ -80,9 +88,15 @@
   <form id="deleteMovie">
       <legend><strong>Delete Movie</strong></legend>
           <fieldset class="fields">
-          <p>Are you sure you wish to delete the following?</p>
-          <label>ID:</label> 1
-            <label> Name </label> Django Unchained
+          <p>Select the movie that you would like to delete:</p>
+{#          <label>ID:</label> 1#}
+{#            <label> Name </label> Django Unchained#}
+            <select name="movies" id="idMovie">
+                <option value="Django Unchained">Django Unchained</option>
+                <option value="Anchorman: The Legend of Ron Burgundy">Anchorman: The Legend of Ron Burgundy</option>
+                <option value="Don't Look Up">Don't Look Up</option>
+                <option value="Kill Bill: Vol. 1">Kill Bill: Vol. 1</option>
+                <option value="John Wick">John Wick</option>
 
     </fieldset>
     <input class="btn" type="submit" id="DeleteMovie" value="Delete Movie">
