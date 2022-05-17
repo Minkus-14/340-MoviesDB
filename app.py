@@ -110,10 +110,10 @@ def movies():
         Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)', Genres.genreName AS 'Genre', group_concat(Actors.actorName) AS 'Actors',
         Directors.directorName AS 'Director Name' 
         FROM Movies
-        JOIN Genres ON Movies.idGenre = Genres.idGenre
-        JOIN Directors ON Movies.idDirector = Directors.idDirector
-        JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
-        JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
+        LEFT JOIN Genres ON Movies.idGenre = Genres.idGenre
+        LEFT JOIN Directors ON Movies.idDirector = Directors.idDirector
+        LEFT JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
+        LEFT JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
         GROUP BY Movies.movieName
         ORDER BY Movies.movieName ASC;"""
         cur = mysql.connection.cursor()
@@ -159,34 +159,64 @@ def edit_movies(id):
             releaseYear = request.form["releaseYear"]
             rating = request.form["rating"]
             movieLength = request.form["movieLength"]
+            idDirector = request.form["idDirector"]
+            idGenre = request.form["idGenre"]
 
-            # account for null rating and movieLength
-            if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
+            # account for null rating, movieLength and idGenre
+            if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None") and (idGenre == "" or idGenre == "None"):
                 # mySQL query to update the attributes of person with our passed id value
-                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s WHERE Movies.idMovie = %s"
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, idMovie))
+                cur.execute(query, (movieName, releaseYear, idDirector, idMovie))
+                mysql.connection.commit()
+
+            # account for null rating and idGenre
+            elif (rating == "" or rating == "None") and (idGenre == "" or idGenre == "None"):
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.movieLength = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, movieLength, idDirector, idMovie))
+                mysql.connection.commit()
+
+            # account for null movieLength and idGenre
+            elif (idGenre == "" or idGenre == "None") and (movieLength == "" or movieLength == "None"):
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, rating, idDirector, idMovie))
+                mysql.connection.commit()
+
+            # account for null movieLength and rating
+            elif (idGenre == "" or idGenre == "None") and (rating == "" or rating == "None"):
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, idDirector, idGenre, idMovie))
                 mysql.connection.commit()
 
             # account for null rating
             elif rating == "" or rating == "None":
-                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.movieLength = %s WHERE Movies.idMovie = %s"
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.movieLength = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, movieLength, idMovie))
+                cur.execute(query, (movieName, releaseYear, movieLength, idDirector, idGenre, idMovie))
                 mysql.connection.commit()
 
             # account for null movieLength
             elif movieLength == "" or movieLength == "None":
-                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s WHERE Movies.idMovie = %s"
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, idMovie))
+                cur.execute(query, (movieName, releaseYear, rating, idDirector, idGenre, idMovie))
+                mysql.connection.commit()
+
+            # account for null idGenre
+            elif movieLength == "" or movieLength == "None":
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.movieLength = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector, idMovie))
                 mysql.connection.commit()
 
             # no null inputs
             else:
-                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.movieLength = %s WHERE Movies.idMovie = %s"
+                query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.movieLength = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, movieLength, idMovie))
+                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector, idGenre, idMovie))
                 mysql.connection.commit()
 
             # redirect back to people page after we execute the update query
