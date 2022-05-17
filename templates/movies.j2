@@ -55,7 +55,7 @@
 </head>
 
 <body onload="browseMovies()">
-	<h1>Movies</h1> [ Planets | <a href="people">People</a> | Certifications | People Certified ]
+	<h1>Movies</h1> [ <a href="people">People</a> | <a href="movies">Movies</a> | Actors | Directors | Genres | Movie Actors | Director Genres | Actor Genres ]
 	<div id="browse">
 		<p><a href="#" onClick="newMovies()">Add New</a> </p>
 		<table border="1" cellpadding="5">
@@ -84,8 +84,8 @@
                             {% endfor %}
 
                             <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_movies/{{item.idMovie}}" class="btn btn-default">Edit</a></td>
-						    <td><a href="delete_movies/{{item.idMovie}}" class="btn btn-default">Delete</a></td>
+						    <td><a href="edit_movies/{{item.ID}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_movies/{{item.ID}}" class="btn btn-default">Delete</a></td>
 
 					    </tr>
                         {% endfor %}
@@ -112,11 +112,27 @@
 				<label for="model">Movie Length (min):</label>
 				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="">
 
-				<label for="model">Director ID:</label>
-				<input type="text" class="form-control" id="idDirector" name="idDirector" pattern="[A-Za-z0-9]{1,}" placeholder="" required>
+{#				<label for="model">Director ID:</label>#}
+{#				<input type="text" class="form-control" id="idDirector" name="idDirector" pattern="[A-Za-z0-9]{1,}" placeholder="" required>#}
+{##}
+{#				<label for="model">Genre ID:</label>#}
+{#				<input type="text" class="form-control" id="idGenre" name="idGenre" pattern="[A-Za-z0-9]{1,}" placeholder="">#}
 
-				<label for="model">Genre ID:</label>
-				<input type="text" class="form-control" id="idGenre" name="idGenre" pattern="[A-Za-z0-9]{1,}" placeholder="">
+                <label for="year">Director:</label>
+				<select class="form-control" id="idDirector" name="idDirector" pattern="[0-4]{1}" placeholder="" required>
+				<!-- these are hard coded, but you can add code to make this dynamic -->
+					<option value="1">Quentin Tarantino</option>
+					<option value="2">Adam McKay</option>
+					<option value="3">Chad Stahelski</option>
+				</select>
+
+                <label for="year">Genre:</label>
+				<select class="form-control" id="idGenre" name="idGenre" pattern="[0-4]{1}" placeholder="" required>
+				<!-- these are hard coded, but you can add code to make this dynamic -->
+					<option value="1">Western</option>
+					<option value="2">Comedy</option>
+					<option value="3">Action</option>
+				</select>
 
             </fieldset>
 
