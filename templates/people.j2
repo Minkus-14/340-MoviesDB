@@ -1,7 +1,7 @@
 <html>
 <!-- Adapted from the people.html UI design -->
 <head>
-	<title>Movies</title>
+	<title>People</title>
 	<link href="style.css" rel="stylesheet" type="text/css" />
 	<script language="JavaScript">
 	function showform(dowhat) {
@@ -36,7 +36,7 @@
 			document.getElementById('delete').style.display = 'none';
 		}
 	}
-	function newMovies() {
+	function newPerson() {
 		showform('insert');
 	}
 	function updatePerson(pid) {
@@ -45,7 +45,7 @@
 	function deletePerson(pid) {
 		showform('delete');
 	}
-	function browseMovies() {
+	function browsePeople() {
 		showform('browse');
 	}
 	function showAll() {
@@ -54,10 +54,10 @@
 	</script>
 </head>
 
-<body onload="browseMovies()">
-	<h1>Movies</h1> [ <a href="people">People</a> | <a href="movies">Movies</a> | Actors | Directors | Genres | Movie Actors | Director Genres | Actor Genres ]
+<body onload="browsePeople()">
+	<h1>People</h1> [ <a href="people">People</a> | <a href="movies">Movies</a> | Actors | Directors | Genres | Movie Actors | Director Genres | Actor Genres ]
 	<div id="browse">
-		<p><a href="#" onClick="newMovies()">Add New</a> </p>
+		<p><a href="#" onClick="newPerson()">Add New</a> </p>
 		<table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
             {% if data %}
@@ -84,8 +84,8 @@
                             {% endfor %}
 
                             <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_movies/{{item.ID}}" class="btn btn-default">Edit</a></td>
-						    <td><a href="delete_movies/{{item.ID}}" class="btn btn-default">Delete</a></td>
+						    <td><a href="edit_people/{{item.id}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_people/{{item.id}}" class="btn btn-default">Delete</a></td>
 
 					    </tr>
                         {% endfor %}
@@ -95,70 +95,60 @@
 	</div>	<!-- browse -->
 
 	<div id="insert">
-		<!-- form to INSERT new data into Movies -->
-		<form id="insertMovies" action="/movies" method="post">
-			<legend><strong>Add Movie</strong></legend>
+		<!-- form to INSERT new data into bsg_people-->
+		<form id="insertPerson" action="/people" method="post">
+			<legend><strong>Add Person</strong></legend>
 			<fieldset>
                 <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
-				<label for="make">Movie Title:</label>
-				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="" required>
+				<label for="make">first name:</label>
+				<input type="text" class="form-control" id="fname" name="fname" pattern="[A-Za-z]{1,}" placeholder="" required>
 
-				<label for="model">Release Year:</label>
-				<input type="text" class="form-control" id="releaseYear" name="releaseYear" pattern="[A-Za-z0-9]{1,}" placeholder="" required>
+				<label for="model">last name:</label>
+				<input type="text" class="form-control" id="lname" name="lname" pattern="[A-Za-z0-9]{1,}" placeholder="" required>
 
-				<label for="model">Rating:</label>
-				<input type="text" class="form-control" id="rating" name="rating" pattern="[A-Za-z0-9]+([\.,]{1,}" step="0.1" placeholder="">
-
-				<label for="model">Movie Length (min):</label>
-				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="">
-
-{#				<label for="model">Director ID:</label>#}
-{#				<input type="text" class="form-control" id="idDirector" name="idDirector" pattern="[A-Za-z0-9]{1,}" placeholder="" required>#}
-{##}
-{#				<label for="model">Genre ID:</label>#}
-{#				<input type="text" class="form-control" id="idGenre" name="idGenre" pattern="[A-Za-z0-9]{1,}" placeholder="">#}
-
-                <label for="year">Director:</label>
-				<select class="form-control" id="idDirector" name="idDirector" pattern="[0-4]{1}" placeholder="" required>
+				<label for="year">homeworld:</label>
+				<select class="form-control" id="homeworld" name="homeworld" pattern="[0-4]{1}" placeholder="" required>
 				<!-- these are hard coded, but you can add code to make this dynamic -->
-					<option value="1">Quentin Tarantino</option>
-					<option value="2">Adam McKay</option>
-					<option value="3">Chad Stahelski</option>
+					<option value="0">&nbsp;</option>
+					<option value="1">Gemenon</option>
+					<option value="2">Leonis</option>
+					<option value="3">Caprica</option>
 				</select>
 
-                <label for="year">Genre:</label>
-				<select class="form-control" id="idGenre" name="idGenre" pattern="[0-4]{1}" placeholder="" required>
-				<!-- these are hard coded, but you can add code to make this dynamic -->
-					<option value="1">Western</option>
-					<option value="2">Comedy</option>
-					<option value="3">Action</option>
-				</select>
-
+				<label for="color">age:</label>
+				<input type="text" class="form-control" id="age" name="age" pattern="[A-Za-z0-9]{1,}" placeholder="">
             </fieldset>
 
-            <!-- Create 'Add Movie' and 'Cancel' buttons -->
-			<input type="submit" value="Add Movies" name="Add_Movies" class="btn btn-primary" style="margin:.5rem;">
-			<input class="btn" type="button" value="Cancel" onClick="browseMovies()">
+            <!-- Create 'Add Person' and 'Cancel' buttons -->
+			<input type="submit" value="Add Person" name="Add_Person" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browsePeople()">
         </form>
 	</div><!--insert-->
-
 	<div id="edit">
 		<!-- form to edit data in bsg_people-->
-		<form id="editMovies" action="/edit_movies/{{data[0].idMovie}}" method="post">
-			<legend><strong>Edit Movie</strong></legend>
+		<form id="editPerson" action="/edit_people/{{data[0].id}}" method="post">
+			<legend><strong>Edit Person</strong></legend>
 			<fieldset>
-				<input type="hidden" value="{{data[0].idMovie}}" class="form-control" id="idMovie" name="idMovie" required>
+				<input type="hidden" value="{{data[0].id}}" class="form-control" id="personID" name="personID" required>
+				<label for="make">first name:</label>
 
-                <label for="make">Movie Title:</label>
-				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="{{data[0].movieName}}" required>
+				<input type="text" class="form-control" id="fname" name="fname" pattern="[A-Za-z]{1,}" placeholder="{{data[0].fname}}" required>
+				<label for="model">last name:</label>
 
-                <label for="model">Release Year:</label>
-				<input type="text" class="form-control" id="releaseYear" name="releaseYear" pattern="[A-Za-z0-9]{1,}" placeholder="{{data[0].releaseYear}}" required>
+				<input type="text" class="form-control" id="lname" name="lname" pattern="[A-Za-z0-9]{1,}" placeholder="{{data[0].lname}}" required>
+				<label for="year">homeworld:</label>
 
-                <label for="model">Movie Length (min):</label>
-				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="{{data[0].movieLength}}" required>
+				<select class="form-control" id="homeworld" name="homeworld" pattern="[0-4]{1}" placeholder="" required>
+					<option value="0">&nbsp;</option>
+					<option value="1">Gemenon</option>
+					<option value="2">Leonis</option>
+					<option value="3">Caprica</option>
+					<option value="{{data[0].homeworld}}" selected></option>
+				</select>
 
-                <input class="btn" type="button" value="Cancel" onClick="browseMovies()" style="margin:.5rem;">
+				<label for="color">age:</label>
+				<input type="text" class="form-control" id="age" name="age" pattern="[A-Za-z0-9]{1,}" placeholder="{{data[0].age}}" required> </fieldset>
+				<input class="btn" type="button" value="Cancel" onClick="browsePeople()" style="margin:.5rem;">
         </form>
 	</div><!--edit-->
 </body>
