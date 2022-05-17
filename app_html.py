@@ -313,7 +313,7 @@ def root():
 
 @app.route('/movies')
 def root():
-    return render_template("movies.j2", movies=movies_from_app_py)
+    return render_template("movies_old.j2", movies=movies_from_app_py)
 
 @app.route('/movie_actors')
 def movie_actors():
