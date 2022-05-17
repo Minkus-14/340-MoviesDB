@@ -106,7 +106,8 @@ def movies():
     # Grab movies data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the movies in Movies
-        query1 = "SELECT * FROM Movies"
+        query1 = """SELECT Movies.idMovie AS 'ID', Movies.movieName AS 'Movie name', Movies.releaseYear AS 'Release Year',
+        Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)' FROM Movies"""
         cur = mysql.connection.cursor()
         cur.execute(query1)
         data = cur.fetchall()
