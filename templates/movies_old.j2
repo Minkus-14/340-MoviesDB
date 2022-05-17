@@ -1,0 +1,107 @@
+<html>
+<head>
+    <style>
+        table, th, td
+        {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
+    <title>MoviesDB</title>
+</head>
+<body>
+    <h1>MoviesDB</h1>
+    <h2>Movies</h2>
+    <p>Links to other pages:</p>
+    <p>
+        <a href="{{ url_for('root') }}">Movies</a>
+        <a href="{{ url_for('actors') }}">Actors</a>
+        <a href="{{ url_for('directors') }}">Directors</a>
+        <a href="{{ url_for('genres') }}">Genres</a>
+        <a href="{{ url_for('movie_actors') }}">Movie Actors</a>
+        <a href="{{ url_for('genre_actors') }}">Genre Actors</a>
+        <a href="{{ url_for('genre_directors') }}">Genre Directors</a>
+    </p>
+</body>
+<table>
+    <thead>
+    <tr>
+        <th>Movie Name</th>
+        <th>Release Year</th>
+        <th>Rating</th>
+        <th>Length (min)</th>
+        <th>Genre</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    <tbody>
+    {% for item in movies %}
+    <tr>
+        <td>{{item['movieName']}}</td>
+        <td>{{item['releaseYear']}}</td>
+        <td>{{item['rating']}}</td>
+        <td>{{item['movieLength']}}</td>
+        <td>{{item['genreName']}}</td>
+        <td><input type="submit" value="Edit" name="action1"/></td>
+        <td><input type="submit" value="Delete" name="action1"/></td>
+    </tr>
+    {% endfor %}
+</table>
+<p>&nbsp;</p>
+<div id="insert" style="display: block">
+    <form id="addMovie">
+        <legend><strong>Add Movie</strong></legend>
+          <fieldset class="fields">
+            <label> Movie Name </label> <input type="text" name="name">
+            <label> Release Year </label> <input type="text" name="population">
+            <label> Rating </label> <input type="text" name="language">
+            <label> Length (min) </label> <input type="text" name="language">
+            <label> Genre </label> <input type="text" name="name">
+          </fieldset>
+          <input class="btn" type="submit" id="addMovie" value="Add a Movie">
+          <input class="btn" type="button" value="cancel">
+	</form> <!--add new movie-->
+</div><!-- insert -->
+
+<p>&nbsp;</p>
+
+<div id="update" style="display: block">
+  <form id="updateMovie">
+      <legend><strong>Edit Movie</strong></legend>
+          <fieldset class="fields">
+          <label>ID:</label> 1
+            <label> Movie Name </label> <input type="text" name="name" value="Django Unchained">
+            <label> Release Year </label> <input type="text"  name="population" value="2012">
+            <label> Rating </label> <input type="text" name="language" value="8.4">
+            <label> Length (min) </label> <input type="text" name="language" value="165">
+            <label> Genre </label> <input type="text" name="text" value="Western">
+    </fieldset>
+    <input class="btn" type="submit" id="UpdateSaveMovie" value="Save Update Movie">
+          <input class="btn" type="button" value="cancel" >
+  </form>
+</div><!-- update -->
+
+<p>&nbsp;</p>
+
+<div id="delete" style="display: block">
+  <form id="deleteMovie">
+      <legend><strong>Delete Movie</strong></legend>
+          <fieldset class="fields">
+          <p>Select the movie that you would like to delete:</p>
+{#          <label>ID:</label> 1#}
+{#            <label> Name </label> Django Unchained#}
+            <select name="movies" id="idMovie">
+                <option value="Django Unchained">Django Unchained</option>
+                <option value="Anchorman: The Legend of Ron Burgundy">Anchorman: The Legend of Ron Burgundy</option>
+                <option value="Don't Look Up">Don't Look Up</option>
+                <option value="Kill Bill: Vol. 1">Kill Bill: Vol. 1</option>
+                <option value="John Wick">John Wick</option>
+
+    </fieldset>
+    <input class="btn" type="submit" id="DeleteMovie" value="Delete Movie">
+          <input class="btn" type="button" value="cancel" >
+  </form>
+</div><!-- delete -->
+
+</html>
