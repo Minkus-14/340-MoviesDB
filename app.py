@@ -28,47 +28,53 @@ def root():
 @app.route('/movies', methods=["POST", "GET"])
 def movies():
     # Separate out the request methods, in this case this is for a POST
-    # insert a person into the bsg_people entity
+    # insert a movie into the Movies entity
     if request.method == "POST":
-        # fire off if user presses the Add Person button
-        if request.form.get("Add_Person"):
+        # fire off if user presses the Add Movie button
+        if request.form.get("Add_Movies"):
             # grab user form inputs
+            idMovie = request.form["idMovie"]
+            movieName = request.form["movieName"]
+            releaseYear = request.form["releaseYear"]
+            rating = request.form["rating"]
+            movieLength = request.form["movieLength"]
+            idDirector = request.form["idDirector"]
             fname = request.form["fname"]
             lname = request.form["lname"]
             homeworld = request.form["homeworld"]
             age = request.form["age"]
 
-            # account for null age AND homeworld
-            if age == "" and homeworld == "0":
+            # account for null rating and movieLength
+            if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
                 # mySQL query to insert a new person into bsg_people with our form inputs
-                query = "INSERT INTO bsg_people (fname, lname) VALUES (%s, %s)"
+                query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname))
+                cur.execute(query, (movieName, releaseYear, idDirector))
                 mysql.connection.commit()
 
-            # account for null homeworld
-            elif homeworld == "0":
-                query = "INSERT INTO bsg_people (fname, lname, age) VALUES (%s, %s,%s)"
+            # account for null rating
+            elif rating == "" or rating == "None":
+                query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, age))
+                cur.execute(query, (movieName, releaseYear, movieLength, idDirector))
                 mysql.connection.commit()
 
-            # account for null age
-            elif age == "":
-                query = "INSERT INTO bsg_people (fname, lname, homeworld) VALUES (%s, %s,%s)"
+            # account for null movieLength
+            elif movieLength == "" or movieLength == "None":
+                query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, homeworld))
+                cur.execute(query, (movieName, releaseYear, rating, idDirector))
                 mysql.connection.commit()
 
             # no null inputs
             else:
-                query = "INSERT INTO bsg_people (fname, lname, homeworld, age) VALUES (%s, %s,%s,%s)"
+                query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector) VALUES (%s, %s,%s,%s,%s)"
                 cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, homeworld, age))
+                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector))
                 mysql.connection.commit()
 
             # redirect back to people page
-            return redirect("/people")
+            return redirect("/movies")
 
     # Grab movies data so we send it to our template to display
     if request.method == "GET":
@@ -118,7 +124,7 @@ def edit_movies(id):
             rating = request.form["rating"]
             movieLength = request.form["movieLength"]
 
-            # # account for null rating and movieLength
+            # account for null rating and movieLength
             if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
                 # mySQL query to update the attributes of person with our passed id value
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s WHERE Movies.idMovie = %s"
@@ -149,6 +155,19 @@ def edit_movies(id):
 
             # redirect back to people page after we execute the update query
             return redirect("/movies")
+
+# route for delete functionality, deleting a person from bsg_people,
+# we want to pass the 'id' value of that person on button click (see HTML) via the route
+@app.route("/delete_movies/<int:id>")
+def delete_movies(id):
+    # mySQL query to delete the movie with our passed id
+    query = "DELETE FROM Movies WHERE idMovie = '%s';"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (id,))
+    mysql.connection.commit()
+
+    # redirect back to people page
+    return redirect("/movies")
 
 
 @app.route('/bsg-people')
