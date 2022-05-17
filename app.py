@@ -33,23 +33,43 @@ def movies():
         # fire off if user presses the Add Movie button
         if request.form.get("Add_Movies"):
             # grab user form inputs
-            # idMovie = request.form["idMovie"]
             movieName = request.form["movieName"]
             releaseYear = request.form["releaseYear"]
             rating = request.form["rating"]
             movieLength = request.form["movieLength"]
             idDirector = request.form["idDirector"]
-            # fname = request.form["fname"]
-            # lname = request.form["lname"]
-            # homeworld = request.form["homeworld"]
-            # age = request.form["age"]
+            idGenre = request.form["idGenre"]
 
-            # account for null rating and movieLength
+            # account for null rating, movieLength and idGenre
             if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
                 # mySQL query to insert a new person into bsg_people with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
                 cur = mysql.connection.cursor()
                 cur.execute(query, (movieName, releaseYear, idDirector))
+                mysql.connection.commit()
+
+            # account for null movieLength and idGenre
+            elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
+                # mySQL query to insert a new person into bsg_people with our form inputs
+                query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, rating, idDirector))
+                mysql.connection.commit()
+
+            # account for null rating and movieLength
+            elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
+                # mySQL query to insert a new person into bsg_people with our form inputs
+                query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, idDirector))
+                mysql.connection.commit()
+
+            # account for null rating and idGenre
+            elif (rating == "" or rating == "None") and (idGenre == "" or idGenre == "None"):
+                # mySQL query to insert a new person into bsg_people with our form inputs
+                query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, movieLength, idDirector))
                 mysql.connection.commit()
 
             # account for null rating
@@ -66,11 +86,18 @@ def movies():
                 cur.execute(query, (movieName, releaseYear, rating, idDirector))
                 mysql.connection.commit()
 
-            # no null inputs
-            else:
+            # account for null idGenre
+            elif movieLength == "" or movieLength == "None":
                 query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector) VALUES (%s, %s,%s,%s,%s)"
                 cur = mysql.connection.cursor()
                 cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector))
+                mysql.connection.commit()
+
+            # no null inputs
+            else:
+                query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector, idGenre) VALUES (%s, %s,%s,%s,%s,%s)"
+                cur = mysql.connection.cursor()
+                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector, idGenre))
                 mysql.connection.commit()
 
             # redirect back to people page
