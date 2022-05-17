@@ -1,3 +1,6 @@
+# Group 99: The Gretzky Coalition
+# Code adapted from https://github.com/osu-cs340-ecampus/flask-starter-app
+
 from flask import Flask, render_template, json, redirect
 import database.db_connector as db
 from flask import request
