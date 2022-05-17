@@ -33,16 +33,16 @@ def movies():
         # fire off if user presses the Add Movie button
         if request.form.get("Add_Movies"):
             # grab user form inputs
-            idMovie = request.form["idMovie"]
+            # idMovie = request.form["idMovie"]
             movieName = request.form["movieName"]
             releaseYear = request.form["releaseYear"]
             rating = request.form["rating"]
             movieLength = request.form["movieLength"]
             idDirector = request.form["idDirector"]
-            fname = request.form["fname"]
-            lname = request.form["lname"]
-            homeworld = request.form["homeworld"]
-            age = request.form["age"]
+            # fname = request.form["fname"]
+            # lname = request.form["lname"]
+            # homeworld = request.form["homeworld"]
+            # age = request.form["age"]
 
             # account for null rating and movieLength
             if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
