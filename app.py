@@ -107,7 +107,15 @@ def movies():
     if request.method == "GET":
         # mySQL query to grab all the movies in Movies
         query1 = """SELECT Movies.idMovie AS 'ID', Movies.movieName AS 'Movie name', Movies.releaseYear AS 'Release Year',
-        Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)' FROM Movies"""
+        Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)', Genres.genreName AS 'Genre', group_concat(Actors.actorName) AS 'Actors',
+        Directors.directorName AS 'Director Name' 
+        FROM Movies
+        JOIN Genres ON Movies.idGenre = Genres.idGenre
+        JOIN Directors ON Movies.idDirector = Directors.idDirector
+        JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
+        JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
+        GROUP BY Movies.movieName
+        ORDER BY Movies.movieName ASC;"""
         cur = mysql.connection.cursor()
         cur.execute(query1)
         data = cur.fetchall()
