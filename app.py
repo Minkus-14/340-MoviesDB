@@ -320,6 +320,163 @@ def delete_directors(id):
     return redirect("/directors")
 
 
+@app.route('/actors', methods=["POST", "GET"])
+def actors():
+    # Separate out the request methods, in this case this is for a POST
+    # insert an actor into the Actors table
+    if request.method == "POST":
+        # fire off if user presses the Add Director button
+        if request.form.get("Add_Actor"):
+            # grab user form inputs
+            actorName = request.form["actorName"]
+            age = request.form["age"]
+
+
+            query = "INSERT INTO Actors (actorName, age) VALUES (%s,%s)"
+            cur = mysql.connection.cursor()
+            cur.execute(query, (actorName, age))
+            mysql.connection.commit()
+
+            # redirect back to actor page
+            return redirect("/actors")
+
+    # Grab actor data so we send it to our template to display
+    if request.method == "GET":
+        # mySQL query to grab all the actors in Actors along with their counts
+        query1 = """SELECT idActor AS 'ID', actorName AS 'Director Name', age AS 'Age',
+        (SELECT COUNT(idActor) FROM Actors_has_Movies WHERE Actors_has_Movies.idActor = Actors.idActor GROUP BY idActor) AS '# of Movies Acted in',
+        (SELECT COUNT(idActor) FROM Genres_has_Actors WHERE Genres_has_Actors.idActor = Actors.idActor GROUP BY idActor) AS '# of Genres Acted in'
+        FROM Actors;
+        """
+        cur = mysql.connection.cursor()
+        cur.execute(query1)
+        data = cur.fetchall()
+
+        # render actors page passing our query data
+        return render_template("actors.j2", data=data)
+
+# route for edit functionality, updating the attributes of an actor in Actors
+# similar to our delete route, we want to the pass the 'id' value of that actor on button click (see HTML) via the route
+@app.route("/edit_actors/<int:id>", methods=["POST", "GET"])
+def edit_actors(id):
+    if request.method == "GET":
+        # mySQL query to grab the info of the actor with our passed id
+        query = "SELECT * FROM Actors WHERE idActor = %s" % (id)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+
+        # render edit_actors page passing our query data to the edit_actors template
+        return render_template("edit_actors.j2", data=data)
+
+    # meat and potatoes of our update functionality
+    if request.method == "POST":
+        # fire off if user clicks the 'Edit Actor' button
+        if request.form.get("Edit_Actors"):
+            # grab user form inputs
+            idActor = request.form["idActor"]
+            actorName = request.form["actorName"]
+            age = request.form["age"]
+
+
+            query = "UPDATE Actors SET Actors.actorName = %s, Actors.age = %s WHERE Actors.idActor = %s"
+            cur = mysql.connection.cursor()
+            cur.execute(query, (actorName, age, idActor))
+            mysql.connection.commit()
+
+            # redirect back to Actors page after we execute the update query
+            return redirect("/actors")
+
+# route for delete functionality, deleting an actor from Actors,
+# we want to pass the 'id' value of that actor on button click (see HTML) via the route
+@app.route("/delete_actors/<int:id>")
+def delete_actors(id):
+    # mySQL query to delete the actor with our passed id
+    query = "DELETE FROM Actors WHERE idActor = '%s';"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (id))
+    mysql.connection.commit()
+
+    # redirect back to actors page
+    return redirect("/actors")
+
+
+@app.route('/genres', methods=["POST", "GET"])
+def genres():
+    # Separate out the request methods, in this case this is for a POST
+    # insert a genre into the Genres table
+    if request.method == "POST":
+        # fire off if user presses the Add Genre button
+        if request.form.get("Add_Genre"):
+            # grab user form inputs
+            genreName = request.form["genreName"]
+
+
+            query = "INSERT INTO Genres (genreName) VALUES (%s)"
+            cur = mysql.connection.cursor()
+            cur.execute(query, (genreName))
+            mysql.connection.commit()
+
+            # redirect back to genres page
+            return redirect("/genres")
+
+    # Grab genre data so we can send it to our template to display
+    if request.method == "GET":
+        # mySQL query to grab all the genres in Genres along with their counts
+        query1 = """SELECT idGenre AS 'ID', genreName AS 'Current Genres',
+        (SELECT Count(idGenre) FROM Movies WHERE Movies.idGenre = Genres.idGenre GROUP BY idGenre) AS 'Genre Count'
+        FROM Genres;
+        """
+        cur = mysql.connection.cursor()
+        cur.execute(query1)
+        data = cur.fetchall()
+
+        # render genres page passing our query data
+        return render_template("genres.j2", data=data)
+
+# route for edit functionality, updating the attributes of an genre in Genres
+# similar to our delete route, we want to the pass the 'id' value of that genre on button click (see HTML) via the route
+@app.route("/edit_genres/<int:id>", methods=["POST", "GET"])
+def edit_genres(id):
+    if request.method == "GET":
+        # mySQL query to grab the info of the genre with our passed id
+        query = "SELECT * FROM Genres WHERE idGenre = %s" % (id)
+        cur = mysql.connection.cursor()
+        cur.execute(query)
+        data = cur.fetchall()
+
+        # render edit_genres page passing our query data to the edit_genres template
+        return render_template("edit_genres.j2", data=data)
+
+    # meat and potatoes of our update functionality
+    if request.method == "POST":
+        # fire off if user clicks the 'Edit Genre' button
+        if request.form.get("Edit_Genres"):
+            # grab user form inputs
+            idGenre = request.form["idGenre"]
+            genreName = request.form["genreName"]
+
+            query = "UPDATE Genres SET Genres.genreName = %s WHERE Genres.idGenre = %s"
+            cur = mysql.connection.cursor()
+            cur.execute(query, (genreName, idGenre))
+            mysql.connection.commit()
+
+            # redirect back to Genres page after we execute the update query
+            return redirect("/genres")
+
+# route for delete functionality, deleting an genre from Genres,
+# we want to pass the 'id' value of that actor on button click (see HTML) via the route
+@app.route("/delete_genres/<int:id>")
+def delete_genres(id):
+    # mySQL query to delete the genre with our passed id
+    query = "DELETE FROM Genres WHERE idGenre = '%s';"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (id))
+    mysql.connection.commit()
+
+    # redirect back to genres page
+    return redirect("/genres")
+
 
 """
 @app.route('/bsg-people')
