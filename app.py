@@ -45,7 +45,7 @@ def movies():
 
             # account for null rating, movieLength and idGenre
             if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
-                # mySQL query to insert a new person into bsg_people with our form inputs
+                # mySQL query to insert a new movie into Movie with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
                 cur = mysql.connection.cursor()
                 cur.execute(query, (movieName, releaseYear, idDirector))
@@ -53,7 +53,7 @@ def movies():
 
             # account for null movieLength and idGenre
             elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
-                # mySQL query to insert a new person into bsg_people with our form inputs
+                # mySQL query to insert a new movie into Movies with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
                 cur = mysql.connection.cursor()
                 cur.execute(query, (movieName, releaseYear, rating, idDirector))
@@ -61,7 +61,7 @@ def movies():
 
             # account for null rating and movieLength
             elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
-                # mySQL query to insert a new person into bsg_people with our form inputs
+                # mySQL query to insert a new movie into Movies with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
                 cur = mysql.connection.cursor()
                 cur.execute(query, (movieName, releaseYear, idDirector))
@@ -69,7 +69,7 @@ def movies():
 
             # account for null rating and idGenre
             elif (rating == "" or rating == "None") and (idGenre == "" or idGenre == "None"):
-                # mySQL query to insert a new person into bsg_people with our form inputs
+                # mySQL query to insert a new movie into Movies with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
                 cur = mysql.connection.cursor()
                 cur.execute(query, (movieName, releaseYear, movieLength, idDirector))
@@ -129,27 +129,27 @@ def movies():
         cur.execute(query2)
         actor_data = cur.fetchall()
 
-        # render edit_people page passing our query data and homeworld data to the edit_people template
+        # render movies page passing our query data
         return render_template("movies.j2", data=data, actors=actor_data)
 
-# route for edit functionality, updating the attributes of a person in bsg_people
-# similar to our delete route, we want to the pass the 'id' value of that person on button click (see HTML) via the route
+# route for edit functionality, updating the attributes of a movie in Movies
+# similar to our delete route, we want to the pass the 'id' value of that movie on button click (see HTML) via the route
 @app.route("/edit_movies/<int:id>", methods=["POST", "GET"])
 def edit_movies(id):
     if request.method == "GET":
-        # mySQL query to grab the info of the person with our passed id
+        # mySQL query to grab the info of the movie with our passed id
         query = "SELECT * FROM Movies WHERE idMovie = %s" % (id)
         cur = mysql.connection.cursor()
         cur.execute(query)
         data = cur.fetchall()
 
-        # mySQL query to grab planet id/name data for our dropdown
+        # mySQL query to grab actor id/name data for our dropdown
         query2 = "SELECT idActor, actorName FROM Actors"
         cur = mysql.connection.cursor()
         cur.execute(query2)
         actor_data = cur.fetchall()
 
-        # render edit_people page passing our query data and homeworld data to the edit_people template
+        # render edit_movies page passing our query data to the edit_movies template
         return render_template("edit_movies.j2", data=data, actors=actor_data)
 
     # meat and potatoes of our update functionality
@@ -222,11 +222,11 @@ def edit_movies(id):
                 cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector, idGenre, idMovie))
                 mysql.connection.commit()
 
-            # redirect back to people page after we execute the update query
+            # redirect back to Movies page after we execute the update query
             return redirect("/movies")
 
-# route for delete functionality, deleting a person from bsg_people,
-# we want to pass the 'id' value of that person on button click (see HTML) via the route
+# route for delete functionality, deleting a movie from Movies,
+# we want to pass the 'id' value of that movie on button click (see HTML) via the route
 @app.route("/delete_movies/<int:id>")
 def delete_movies(id):
     # mySQL query to delete the movie with our passed id
@@ -238,7 +238,7 @@ def delete_movies(id):
     # redirect back to people page
     return redirect("/movies")
 
-
+"""
 @app.route('/bsg-people')
 def bsg_people():
 
@@ -400,6 +400,7 @@ def edit_people(id):
             # redirect back to people page after we execute the update query
             return redirect("/people")
 
+"""
 
 # Listener
 
