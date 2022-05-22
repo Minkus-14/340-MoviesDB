@@ -55,7 +55,7 @@
 </head>
 
 <body onload="browseMovies()">
-	<h1>Movies</h1> [ <a href="movies">Movies</a> | Actors | Directors | Genres | Movie Actors | Director Genres | Actor Genres | <a href="people">People (flask example)</a> |  ]
+	<h1>Movies</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | Movie Actors | Director Genres | Actor Genres |  ]
 	<div id="browse">
 		<p><a href="#" onClick="newMovies()">Add New</a> </p>
 		<table border="1" cellpadding="5">
@@ -143,7 +143,7 @@
 	</div><!--insert-->
 
 	<div id="edit">
-		<!-- form to edit data in bsg_people-->
+		<!-- form to edit data in Movies-->
 		<form id="editMovies" action="/edit_movies/{{data[0].idMovie}}" method="post">
 			<legend><strong>Edit Movie</strong></legend>
 			<fieldset>
