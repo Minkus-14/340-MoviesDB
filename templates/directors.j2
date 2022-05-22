@@ -84,8 +84,8 @@
                             {% endfor %}
 
                             <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_director/{{item.ID}}" class="btn btn-default">Edit</a></td>
-						    <td><a href="delete_director/{{item.ID}}" class="btn btn-default">Delete</a></td>
+						    <td><a href="edit_directors/{{item.ID}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_directors/{{item.ID}}" class="btn btn-default">Delete</a></td>
 
 					    </tr>
                         {% endfor %}
@@ -115,7 +115,7 @@
 
 	<div id="edit">
 		<!-- form to edit data in Directors-->
-		<form id="editDirector" action="/edit_director/{{data[0].idDirector}}" method="post">
+		<form id="editDirector" action="/edit_directors/{{data[0].idDirector}}" method="post">
 			<legend><strong>Edit Director</strong></legend>
 			<fieldset>
 				<input type="hidden" value="{{data[0].idDirector}}" class="form-control" id="idDirector" name="idDirector" required>
