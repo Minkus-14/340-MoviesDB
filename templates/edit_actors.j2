@@ -1,14 +1,14 @@
 <html>
 
 <head>
-	<title>Edit Directors</title>
+	<title>Edit Actors</title>
     <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
     <div>
         <table border="1" cellpadding="5">
-            <caption> Editing Director: </caption>
+            <caption> Editing Actor: </caption>
             <!-- Access data tuple passed from app.py -->
             {% if data %}
                 <thead>
@@ -38,22 +38,22 @@
         </table>
 
         <div id="edit">
-            <!-- form to edit data in Directors-->
-            <form id="editDirectors" action="/edit_directors/{{data[0].idDirector}}" method="post">
-                <legend><strong>Edit Director</strong></legend>
+            <!-- form to edit data in Actors-->
+            <form id="editActors" action="/edit_actors/{{data[0].idActor}}" method="post">
+                <legend><strong>Edit Actor</strong></legend>
                 <fieldset>
-                    <!-- We can preset form inputs to match attributes currently stored for 'idDirector' of director to be updated via value= and accessing our passed data tuple -->
+                    <!-- We can preset form inputs to match attributes currently stored for 'idActor' of actor to be updated via value= and accessing our passed data tuple -->
                     <!-- Create hidden form input to store the passed 'id' of the person we are editing so we can access it easily in our 'POST' method in our app.py -->
-                    <input type="hidden" value="{{data[0].idDirector}}" class="form-control" id="idDirector" name="idDirector" required>
+                    <input type="hidden" value="{{data[0].idActor}}" class="form-control" id="idActor" name="idActor" required>
 
-                    <label for="make">Director Name:</label>
-                    <input type="text" value="{{data[0].directorName}}" class="form-control" id="directorName" name="directorName" pattern="[A-Za-z\W+]{1,}" required>
+                    <label for="make">Actor Name:</label>
+                    <input type="text" value="{{data[0].actorName}}" class="form-control" id="actorName" name="actorName" pattern="[A-Za-z\W+]{1,}" required>
 
                     <label for="model">Age:</label>
                     <input type="text" value="{{data[0].age}}" class="form-control" id="age" name="age" pattern="[0-9]{1,}" required>
 
                 </fieldset>
-                <input type="submit" value="Edit Director" name="Edit_Directors" class="btn btn-primary" style="margin:.5rem;">
-                <a href='/directors'><input class="btn" type="button" value="cancel"></a>
+                <input type="submit" value="Edit Actor" name="Edit_Actors" class="btn btn-primary" style="margin:.5rem;">
+                <a href='/actors'><input class="btn" type="button" value="cancel"></a>
             </form>
 </html>
