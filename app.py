@@ -106,6 +106,20 @@ def movies():
             # redirect back to people page
             return redirect("/movies")
 
+        if request.form.get("Search_Movies"):
+            movieSearch = request.form["movieSearch"]
+            query = "SELECT movieName from Movies WHERE movieName LIKE '%'%s'%'"
+
+            cur = mysql.connection.cursor()
+            cur.execute(query, (movieSearch))
+            mysql.connection.commit()
+            moviesFound = cur.fetchall()
+
+            return render_template('movie_search.j2', movies=moviesFound)
+
+
+            return redirect("/movies")
+
     # Grab movies data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the movies in Movies
@@ -325,7 +339,7 @@ def delete_directors(id):
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Directors WHERE idDirector = '%s';"
     cur = mysql.connection.cursor()
-    cur.execute(query, (id))
+    cur.execute(query, (id,))
     mysql.connection.commit()
 
     # redirect back to directors page
@@ -425,7 +439,7 @@ def genres():
 
             query = "INSERT INTO Genres (genreName) VALUES (%s)"
             cur = mysql.connection.cursor()
-            cur.execute(query, genreName)
+            cur.execute(query, (genreName))
             mysql.connection.commit()
 
             # redirect back to genres page
