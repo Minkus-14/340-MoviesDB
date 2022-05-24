@@ -112,27 +112,19 @@
 				<label for="model">Movie Length (min):</label>
 				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="">
 
-{#				<label for="model">Director ID:</label>#}
-{#				<input type="text" class="form-control" id="idDirector" name="idDirector" pattern="[A-Za-z0-9]{1,}" placeholder="" required>#}
-{##}
-{#				<label for="model">Genre ID:</label>#}
-{#				<input type="text" class="form-control" id="idGenre" name="idGenre" pattern="[A-Za-z0-9]{1,}" placeholder="">#}
-
                 <label for="year">Director:</label>
-				<select class="form-control" id="idDirector" name="idDirector" pattern="[0-4]{1}" placeholder="" required>
-				<!-- these are hard coded, but you can add code to make this dynamic -->
-					<option value="1">Quentin Tarantino</option>
-					<option value="2">Adam McKay</option>
-					<option value="3">Chad Stahelski</option>
-				</select>
+                <select name="idDirector" id="idDirector">
+                {% for director in directors %}
+	                <option value={{director.idDirector}}>{{director.directorName}}</option>
+                {% endfor %}
+                </select>
 
                 <label for="year">Genre:</label>
-				<select class="form-control" id="idGenre" name="idGenre" pattern="[0-4]{1}" placeholder="" required>
-				<!-- these are hard coded, but you can add code to make this dynamic -->
-					<option value="1">Western</option>
-					<option value="2">Comedy</option>
-					<option value="3">Action</option>
-				</select>
+                <select name="idGenre" id="idGenre">
+                {% for genre in genres %}
+	                <option value={{genre.idGenre}}>{{genre.genreName}}</option>
+                {% endfor %}
+                </select>
 
             </fieldset>
 

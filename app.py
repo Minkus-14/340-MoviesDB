@@ -123,14 +123,20 @@ def movies():
         cur.execute(query1)
         data = cur.fetchall()
 
-        # mySQL query to grab actor id/name data for our dropdown
-        query2 = "SELECT idActor, actorName FROM Actors"
+        # mySQL query to grab director id/name data for our dropdown
+        query2 = "SELECT idDirector, directorName FROM Directors"
         cur = mysql.connection.cursor()
         cur.execute(query2)
-        actor_data = cur.fetchall()
+        director_data = cur.fetchall()
+
+        # mySQL query to grab genre id/name data for our dropdown
+        query3 = "SELECT idGenre, genreName FROM Genres"
+        cur = mysql.connection.cursor()
+        cur.execute(query3)
+        genre_data = cur.fetchall()
 
         # render movies page passing our query data
-        return render_template("movies.j2", data=data, actors=actor_data)
+        return render_template("movies.j2", data=data, directors=director_data, genres=genre_data)
 
 # route for edit functionality, updating the attributes of a movie in Movies
 # similar to our delete route, we want to the pass the 'id' value of that movie on button click (see HTML) via the route
@@ -143,14 +149,20 @@ def edit_movies(id):
         cur.execute(query)
         data = cur.fetchall()
 
-        # mySQL query to grab actor id/name data for our dropdown
-        query2 = "SELECT idActor, actorName FROM Actors"
+        # mySQL query to grab director id/name data for our dropdown
+        query2 = "SELECT idDirector, directorName FROM Directors"
         cur = mysql.connection.cursor()
         cur.execute(query2)
-        actor_data = cur.fetchall()
+        director_data = cur.fetchall()
+
+        # mySQL query to grab genre id/name data for our dropdown
+        query3 = "SELECT idGenre, genreName FROM Genres"
+        cur = mysql.connection.cursor()
+        cur.execute(query3)
+        genre_data = cur.fetchall()
 
         # render edit_movies page passing our query data to the edit_movies template
-        return render_template("edit_movies.j2", data=data, actors=actor_data)
+        return render_template("edit_movies.j2", data=data, directors=director_data, genres=genre_data)
 
     # meat and potatoes of our update functionality
     if request.method == "POST":
