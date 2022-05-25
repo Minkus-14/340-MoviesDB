@@ -36,16 +36,16 @@
 			document.getElementById('delete').style.display = 'none';
 		}
 	}
-	function newMovieActor() {
+	function newGenreActor() {
 		showform('insert');
 	}
-	function updateMovieActor(pid) {
+	function updateGenreActor(pid) {
 		showform('update');
 	}
-	function deleteMovieActor(pid) {
+	function deleteGenreActor(pid) {
 		showform('delete');
 	}
-	function browseMovieActors() {
+	function browseGenreActors() {
 		showform('browse');
 	}
 	function showAll() {
@@ -54,10 +54,10 @@
 	</script>
 </head>
 
-<body onload="browseMovieActors()">
-	<h1>Movies</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
+<body onload="browseGenreActors()">
+	<h1>Genre Actors</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
 	<div id="browse">
-		<p><a href="#" onClick="newMovieActor()">Add New</a> </p>
+		<p><a href="#" onClick="newGenreActor()">Add New</a> </p>
 		<table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
             {% if data %}
@@ -96,19 +96,27 @@
 
 	<div id="insert">
 		<!-- form to INSERT new data into Actors -->
-		<form id="insertMovieActor" action="/movie_actors" method="post">
-			<legend><strong>Add Movie Actor</strong></legend>
+		<form id="insertGenreActor" action="/genre_actors" method="post">
+			<legend><strong>Add Genre Actor</strong></legend>
 			<fieldset>
                 <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
-				<label for="make">Movie Name:</label>
-				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="" required>
+                <label for="year">Genre:</label>
+                <select name="idGenre" id="idGenre">
+                {% for genre in genres %}
+	                <option value={{genre.idGenre}}>{{genre.genreName}}</option>
+                {% endfor %}
+                </select>
 
-				<label for="model">Actor Name:</label>
-				<input type="text" class="form-control" id="actorName" name="actorName" pattern="[A-za-z0-9]{1,}" placeholder="" required>
+                <label for="year">Actor:</label>
+                <select name="idActor" id="idActor">
+                {% for actor in actors %}
+	                <option value={{actor.idActor}}>{{actor.actorName}}</option>
+                {% endfor %}
+                </select>
             </fieldset>
 
             <!-- Create 'Add Movie Actors' and 'Cancel' buttons -->
-			<input type="submit" value="Add Movie Actor" name="Add_MovieActor" class="btn btn-primary" style="margin:.5rem;">
+			<input type="submit" value="Add Genre Actor" name="Add_GenreActor" class="btn btn-primary" style="margin:.5rem;">
 			<input class="btn" type="button" value="Cancel" onClick="browseMovieActors()">
         </form>
 	</div><!--insert-->

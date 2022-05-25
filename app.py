@@ -553,18 +553,18 @@ def movie_actors():
     # insert an actor into the Actors table
     if request.method == "POST":
         # fire off if user presses the Add Director button
-        # if request.form.get("Add_Actor"):
-        #     # grab user form inputs
-        #     actorName = request.form["actorName"]
-        #     age = request.form["age"]
-        #
-        #     query = "INSERT INTO Actors (actorName, age) VALUES (%s,%s)"
-        #     cur = mysql.connection.cursor()
-        #     cur.execute(query, (actorName, age))
-        #     mysql.connection.commit()
+        if request.form.get("Add_MovieActor"):
+            # grab user form inputs
+            idActor = request.form["idActor"]
+            idMovie = request.form["idMovie"]
+
+            query = "INSERT INTO Actors_has_Movies (idActor, idMovie) VALUES (%s,%s)"
+            cur = mysql.connection.cursor()
+            cur.execute(query, (idActor, idMovie))
+            mysql.connection.commit()
 
             # redirect back to actor page
-            return redirect("/actors")
+            return redirect("/movie_actors")
 
     # Grab actor data so we send it to our template to display
     if request.method == "GET":
@@ -592,7 +592,7 @@ def movie_actors():
         actor_data = cur.fetchall()
 
         # render  page movies_has_actors passing our query data
-        return render_template("movies_actors.j2", data=data, movies=movie_data, actors=actor_data)
+        return render_template("movie_actors.j2", data=data, movies=movie_data, actors=actor_data)
 
 
 @app.route('/genre_directors', methods=["POST", "GET"])
@@ -601,18 +601,18 @@ def genre_directors():
     # insert an actor into the Actors table
     if request.method == "POST":
         # fire off if user presses the Add Director button
-        # if request.form.get("Add_Actor"):
-        #     # grab user form inputs
-        #     actorName = request.form["actorName"]
-        #     age = request.form["age"]
-        #
-        #     query = "INSERT INTO Actors (actorName, age) VALUES (%s,%s)"
-        #     cur = mysql.connection.cursor()
-        #     cur.execute(query, (actorName, age))
-        #     mysql.connection.commit()
+        if request.form.get("Add_GenreDirector"):
+            # grab user form inputs
+            idGenre = request.form["idGenre"]
+            idDirector = request.form["idDirector"]
+
+            query = "INSERT INTO Directors_has_Genres (idGenre, idDirector) VALUES (%s,%s)"
+            cur = mysql.connection.cursor()
+            cur.execute(query, (idGenre, idDirector))
+            mysql.connection.commit()
 
             # redirect back to actor page
-            return redirect("/actors")
+            return redirect("/genre_directors")
 
     # Grab actor data so we send it to our template to display
     if request.method == "GET":
@@ -627,8 +627,20 @@ def genre_directors():
         cur.execute(query1)
         data = cur.fetchall()
 
+        # mySQL query to grab director id/name data for our dropdown
+        query2 = "SELECT idDirector, directorName FROM Directors"
+        cur = mysql.connection.cursor()
+        cur.execute(query2)
+        director_data = cur.fetchall()
+
+        # mySQL query to grab actor id/name data for our dropdown
+        query3 = "SELECT idGenre, genreName FROM Genres"
+        cur = mysql.connection.cursor()
+        cur.execute(query3)
+        genre_data = cur.fetchall()
+
         # render actors page passing our query data
-        return render_template("genre_directors.j2", data=data)
+        return render_template("genre_directors.j2", data=data, directors=director_data, genres=genre_data)
 
 @app.route('/genre_actors', methods=["POST", "GET"])
 def genre_actors():
@@ -636,18 +648,18 @@ def genre_actors():
     # insert an actor into the Actors table
     if request.method == "POST":
         # fire off if user presses the Add Director button
-        # if request.form.get("Add_Actor"):
-        #     # grab user form inputs
-        #     actorName = request.form["actorName"]
-        #     age = request.form["age"]
-        #
-        #     query = "INSERT INTO Actors (actorName, age) VALUES (%s,%s)"
-        #     cur = mysql.connection.cursor()
-        #     cur.execute(query, (actorName, age))
-        #     mysql.connection.commit()
+        if request.form.get("Add_GenreActor"):
+            # grab user form inputs
+            idActor = request.form["idActor"]
+            idGenre = request.form["idGenre"]
+
+            query = "INSERT INTO Genres_has_Actors (idActor, idGenre) VALUES (%s,%s)"
+            cur = mysql.connection.cursor()
+            cur.execute(query, (idActor, idGenre))
+            mysql.connection.commit()
 
             # redirect back to actor page
-            return redirect("/actors")
+            return redirect("/genre_actors")
 
     # Grab actor data so we send it to our template to display
     if request.method == "GET":
@@ -662,8 +674,20 @@ def genre_actors():
         cur.execute(query1)
         data = cur.fetchall()
 
+        # mySQL query to grab director id/name data for our dropdown
+        query2 = "SELECT idActor, actorName FROM Actors"
+        cur = mysql.connection.cursor()
+        cur.execute(query2)
+        actor_data = cur.fetchall()
+
+        # mySQL query to grab actor id/name data for our dropdown
+        query3 = "SELECT idGenre, genreName FROM Genres"
+        cur = mysql.connection.cursor()
+        cur.execute(query3)
+        genre_data = cur.fetchall()
+
         # render actors page passing our query data
-        return render_template("genre_actors.j2", data=data)
+        return render_template("genre_actors.j2", data=data, actors=actor_data, genres=genre_data)
 
 
 """
