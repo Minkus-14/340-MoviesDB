@@ -534,8 +534,21 @@ def movie_actors():
         cur.execute(query1)
         data = cur.fetchall()
 
-        # render actors page passing our query data
-        return render_template("movie_actors.j2", data=data)
+        # mySQL query to grab movie id/name data for our dropdown
+        query2 = "SELECT idMovie, movieName FROM Movies"
+        cur = mysql.connection.cursor()
+        cur.execute(query2)
+        movie_data = cur.fetchall()
+
+        # mySQL query to grab actor id/name data for our dropdown
+        query3 = "SELECT idActor, actorName FROM Actors"
+        cur = mysql.connection.cursor()
+        cur.execute(query3)
+        actor_data = cur.fetchall()
+
+        # render  page movies_has_actors passing our query data
+        return render_template("movies_actors.j2", data=data, movies=movie_data, actors=actor_data)
+
 
 @app.route('/genre_directors', methods=["POST", "GET"])
 def genre_directors():
