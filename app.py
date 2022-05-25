@@ -472,9 +472,7 @@ def genres():
         # fire off if user presses the Add Genre button
         if request.form.get("Add_Genre"):
             # grab user form inputs
-            print("Is this thing on")
             genreName = request.form["genreName"]
-            print(genreName)
             genreName = (genreName,)
 
             query = "INSERT INTO Genres (genreName) VALUES (%s)"
@@ -495,11 +493,11 @@ def genres():
         (SELECT Count(idGenre) FROM Movies WHERE Movies.idGenre = Genres.idGenre GROUP BY idGenre) AS 'Genre Count'
         FROM Genres;
         """
-        # cur = mysql.connection.cursor()
-        # cur.execute(query1)
-        # data = cur.fetchall()
+        cur = mysql.connection.cursor()
+        cur.execute(query1)
+        data = cur.fetchall()
 
-        data = db.execute_query(db_connection, query1).fetchall()
+        # data = db.execute_query(db_connection, query1).fetchall()
 
         # render genres page passing our query data
         return render_template("genres.j2", data=data)
