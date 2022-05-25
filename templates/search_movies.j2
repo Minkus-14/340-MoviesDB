@@ -58,13 +58,47 @@
 	<h1>Movies</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
 	<div id="browse">
 		<p><a href="#" onClick="newMovies()">Add New</a> </p>
-		<table border="1" cellpadding="5">
+        <table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
             {% if data %}
+{#			    <thead>#}
+{#				    <tr>#}
+{#					    <!-- Iterate through each key in the first entry to get the column name -->#}
+{#                        {% for key in data[0].keys() %}#}
+{##}
+{#                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->#}
+{#					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>#}
+{##}
+{#                        <!-- End of this for loop -->#}
+{#                        {% endfor %}#}
+{#                    </tr>#}
+
+				<tbody>
+					<!-- Now, iterate through every item in data -->
+					    <tr>
+                            {% for item in data %}
+						    <!-- Then iterate through every key in the current item dictionary -->
+{#                            {% for key in item.keys() %}#}
+
+						    <!-- Create a <td> element with the value of that key in it -->
+						    <td> {{item.movieName}} </td>
+                            {% endfor %}
+
+                            <!-- Create our edit/delete buttons -->
+						    <td><a href="edit_movies/{{item.ID}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_movies/{{item.ID}}" class="btn btn-default">Delete</a></td>
+
+					    </tr>
+                        {% endfor %}
+                {% endif %}
+        </table>
+		<table border="1" cellpadding="5">
+            <!-- Access data tuple passed from app.py -->
+            {% if view_data %}
 			    <thead>
 				    <tr>
 					    <!-- Iterate through each key in the first entry to get the column name -->
-                        {% for key in data[0].keys() %}
+                        {% for key in view_data[0].keys() %}
 
                         <!-- Create a <th> tag with the key inside of it, this will be our header row -->
 					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
@@ -74,7 +108,7 @@
                     </tr>
 
 				<tbody>
-					<!-- Now, iterate through every item in data -->{% for item in data %}
+					<!-- Now, iterate through every item in data -->{% for item in view_data %}
 					    <tr>
 						    <!-- Then iterate through every key in the current item dictionary -->
                             {% for key in item.keys() %}
@@ -136,19 +170,19 @@
 
 	<div id="edit">
 		<!-- form to edit data in Movies-->
-		<form id="editMovies" action="/edit_movies/{{data[0].idMovie}}" method="post">
+		<form id="editMovies" action="/edit_movies/{{view_data[0].idMovie}}" method="post">
 			<legend><strong>Edit Movie</strong></legend>
 			<fieldset>
-				<input type="hidden" value="{{data[0].idMovie}}" class="form-control" id="idMovie" name="idMovie" required>
+				<input type="hidden" value="{{view_data[0].idMovie}}" class="form-control" id="idMovie" name="idMovie" required>
 
                 <label for="make">Movie Title:</label>
-				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="{{data[0].movieName}}" required>
+				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="{{view_data[0].movieName}}" required>
 
                 <label for="model">Release Year:</label>
-				<input type="text" class="form-control" id="releaseYear" name="releaseYear" pattern="[A-Za-z0-9]{1,}" placeholder="{{data[0].releaseYear}}" required>
+				<input type="text" class="form-control" id="releaseYear" name="releaseYear" pattern="[A-Za-z0-9]{1,}" placeholder="{{view_data[0].releaseYear}}" required>
 
                 <label for="model">Movie Length (min):</label>
-				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="{{data[0].movieLength}}" required>
+				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="{{view_data[0].movieLength}}" required>
 
                 <input class="btn" type="button" value="Cancel" onClick="browseMovies()" style="margin:.5rem;">
         </form>
@@ -156,7 +190,7 @@
 
     <div id="search">
 		<!-- form to INSERT new data into Movies -->
-		<form id="searchMovies" action="/movies" method="post">
+		<form id="searchMovies" action="/search_movies" method="post">
 			<legend><strong>Search Movies</strong></legend>
 			<fieldset>
                 <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->

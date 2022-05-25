@@ -51,6 +51,7 @@ def movies():
                 cur.execute(query, (movieName, releaseYear, idDirector))
                 mysql.connection.commit()
 
+
             # account for null movieLength and idGenre
             elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
                 # mySQL query to insert a new movie into Movies with our form inputs
@@ -104,20 +105,6 @@ def movies():
                 mysql.connection.commit()
 
             # redirect back to people page
-            return redirect("/movies")
-
-        if request.form.get("Search_Movies"):
-            movieSearch = request.form["movieSearch"]
-            query = "SELECT movieName from Movies WHERE movieName LIKE '%'%s'%'"
-
-            cur = mysql.connection.cursor()
-            cur.execute(query, (movieSearch))
-            mysql.connection.commit()
-            moviesFound = cur.fetchall()
-
-            return render_template('movie_search.j2', movies=moviesFound)
-
-
             return redirect("/movies")
 
     # Grab movies data so we send it to our template to display
@@ -263,6 +250,56 @@ def delete_movies(id):
 
     # redirect back to movie page
     return redirect("/movies")
+
+# route for delete functionality, deleting a movie from Movies,
+# we want to pass the 'id' value of that movie on button click (see HTML) via the route
+@app.route("/search_movies", methods=["POST", "GET"])
+def search_movies():
+    if request.method == "POST":
+        movieSearch = request.form["movieSearch"]
+        query = "SELECT movieName from Movies WHERE movieName LIKE %s"
+
+        cur = mysql.connection.cursor()
+        cur.execute(query, (movieSearch))
+        mysql.connection.commit()
+        moviesFound = cur.fetchall()
+
+        if len(moviesFound) != 0:
+            return render_template('search_movies.j2', data=moviesFound)
+
+        else:
+            return render_template('search_movies.j2')
+
+    if request.method == "GET":
+        # mySQL query to grab all the movies in Movies
+        query1 = """SELECT Movies.idMovie AS 'ID', Movies.movieName AS 'Movie name', Movies.releaseYear AS 'Release Year',
+        Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)', Genres.genreName AS 'Genre', group_concat(Actors.actorName) AS 'Actors',
+        Directors.directorName AS 'Director Name' 
+        FROM Movies
+        LEFT JOIN Genres ON Movies.idGenre = Genres.idGenre
+        LEFT JOIN Directors ON Movies.idDirector = Directors.idDirector
+        LEFT JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
+        LEFT JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
+        GROUP BY Movies.movieName
+        ORDER BY Movies.movieName ASC;"""
+        cur = mysql.connection.cursor()
+        cur.execute(query1)
+        view_data = cur.fetchall()
+
+        # mySQL query to grab director id/name data for our dropdown
+        query2 = "SELECT idDirector, directorName FROM Directors"
+        cur = mysql.connection.cursor()
+        cur.execute(query2)
+        director_data = cur.fetchall()
+
+        # mySQL query to grab genre id/name data for our dropdown
+        query3 = "SELECT idGenre, genreName FROM Genres"
+        cur = mysql.connection.cursor()
+        cur.execute(query3)
+        genre_data = cur.fetchall()
+
+        # render movies page passing our query data
+        return render_template("search_movies.j2", view_data=view_data, directors=director_data, genres=genre_data)
 
 
 @app.route('/directors', methods=["POST", "GET"])
@@ -435,12 +472,18 @@ def genres():
         # fire off if user presses the Add Genre button
         if request.form.get("Add_Genre"):
             # grab user form inputs
+            print("Is this thing on")
             genreName = request.form["genreName"]
+            print(genreName)
+            genreName = (genreName,)
 
             query = "INSERT INTO Genres (genreName) VALUES (%s)"
             cur = mysql.connection.cursor()
             cur.execute(query, (genreName))
             mysql.connection.commit()
+
+            # data = (genreName,)
+            # db.execute_query(db_connection, query, data)
 
             # redirect back to genres page
             return redirect("/genres")
@@ -452,9 +495,11 @@ def genres():
         (SELECT Count(idGenre) FROM Movies WHERE Movies.idGenre = Genres.idGenre GROUP BY idGenre) AS 'Genre Count'
         FROM Genres;
         """
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
+        # cur = mysql.connection.cursor()
+        # cur.execute(query1)
+        # data = cur.fetchall()
+
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # render genres page passing our query data
         return render_template("genres.j2", data=data)
@@ -775,7 +820,7 @@ def edit_people(id):
 # Listener
 
 if __name__ == "__main__":
-    app.run(port=9988, debug=True)
+    app.run(host="0.0.0.0", port=9988, debug=True)
     # port = int(os.environ.get('PORT', 9988))
     # #                                 ^^^^
     # #              You can replace this number with any valid port
