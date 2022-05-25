@@ -1,46 +1,132 @@
 <html>
+<!-- Adapted from the people.html UI design -->
 <head>
-    <style>
-        table, th, td
-        {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 5px;
-        }
-    </style>
-    <title>MoviesDB</title>
+	<title>Genres</title>
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<script language="JavaScript">
+	function showform(dowhat) {
+		/*
+		 * four DIVS: browse, insert, update, delete
+		 * this function sets one visible the others not
+		 */
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'update') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'delete') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'block';
+		} else if(dowhat == 'all') {
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'block';
+		} else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+	function newGenre() {
+		showform('insert');
+	}
+	function updateGenre(pid) {
+		showform('update');
+	}
+	function deleteGenre(pid) {
+		showform('delete');
+	}
+	function browseGenres() {
+		showform('browse');
+	}
+	function showAll() {
+		showform('all');
+	}
+	</script>
 </head>
-<body>
-    <h1>MoviesDB</h1>
-    <h2>Genres</h2>
-    <p>Links to other pages:</p>
-    <p>
-        <a href="{{ url_for('root') }}">Movies</a>
-        <a href="{{ url_for('actors') }}">Actors</a>
-        <a href="{{ url_for('directors') }}">Directors</a>
-        <a href="{{ url_for('genres') }}">Genres</a>
-        <a href="{{ url_for('movie_actors') }}">Movie Actors</a>
-        <a href="{{ url_for('genre_actors') }}">Genre Actors</a>
-        <a href="{{ url_for('genre_directors') }}">Genre Directors</a>
-    </p>
+
+<body onload="browseGenres()">
+	<h1>Genres</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
+	<div id="browse">
+		<p><a href="#" onClick="newGenre()">Add New</a> </p>
+		<table border="1" cellpadding="5">
+            <!-- Access data tuple passed from app.py -->
+            {% if data %}
+			    <thead>
+				    <tr>
+					    <!-- Iterate through each key in the first entry to get the column name -->
+                        {% for key in data[0].keys() %}
+
+                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->
+					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+
+                        <!-- End of this for loop -->
+                        {% endfor %}
+                    </tr>
+
+				<tbody>
+					<!-- Now, iterate through every item in data -->{% for item in data %}
+					    <tr>
+						    <!-- Then iterate through every key in the current item dictionary -->
+                            {% for key in item.keys() %}
+
+						    <!-- Create a <td> element with the value of that key in it -->
+						    <td> {{item[key]}} </td>
+                            {% endfor %}
+
+                            <!-- Create our edit/delete buttons -->
+						    <td><a href="edit_genre/{{item.ID}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_genre/{{item.ID}}" class="btn btn-default">Delete</a></td>
+
+					    </tr>
+                        {% endfor %}
+                {% endif %}
+        </table>
+	<p>&nbsp;</p>
+	</div>	<!-- browse -->
+
+	<div id="insert">
+		<!-- form to INSERT new data into Genres -->
+		<form id="insertGenre" action="/genres" method="post">
+			<legend><strong>Add Genre</strong></legend>
+			<fieldset>
+                <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
+				<label for="make">Genre Name:</label>
+				<input type="text" class="form-control" id="genreName" name="genreName" pattern="[A-Za-z\W+]{1,}" placeholder="" required>
+            </fieldset>
+
+            <!-- Create 'Add Genre' and 'Cancel' buttons -->
+			<input type="submit" value="Add Genre" name="Add_Genre" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseGenres()">
+        </form>
+
+	</div><!--insert-->
+
+	<div id="edit">
+		<!-- form to edit data in Genres-->
+		<form id="editGenre" action="/edit_genre/{{data[0].idGenre}}" method="post">
+			<legend><strong>Edit Genre</strong></legend>
+			<fieldset>
+				<input type="hidden" value="{{data[0].idGenre}}" class="form-control" id="idGenre" name="idGenre" required>
+
+                <label for="make">Genre Name:</label>
+				<input type="text" class="form-control" id="genreName" name="genreName" pattern="[A-Za-z\W+]{1,}" placeholder="{{data[0].genreName}}" required>
+
+
+                <input class="btn" type="button" value="Cancel" onClick="browseGenres()" style="margin:.5rem;">
+        </form>
+	</div><!--edit-->
 </body>
-<table>
-    <thead>
-    <tr>
-        <th>Genre ID</th>
-        <th>Genre Name</th>
-        <th>Edit</th>
-        <th>Delete</th>
-    </tr>
-    <tbody>
-    {% for item in genres %}
-    <tr>
-        <td>{{item['idGenre']}}</td>
-        <td>{{item['genreName']}}</td>
-        <td><input type="submit" value="Edit" name="action1"/></td>
-        <td><input type="submit" value="Delete" name="action1"/></td>
-    </tr>
-    {% endfor %}
-</table>
-<input type="submit" value="Add Genre" name="action1"/>
 </html>
+
+
+
