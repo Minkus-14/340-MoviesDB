@@ -100,12 +100,21 @@
 			<legend><strong>Add Movie Actor</strong></legend>
 			<fieldset>
                 <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
-				<label for="make">Movie Name:</label>
-				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="" required>
+				
+				<label for="year">Movie:</label>
+                <select name="idMovie" id="idMovie">
+                {% for movie in movies %}
+	                <option value={{movie.idMovie}}>{{movie.movieName}}</option>
+                {% endfor %}
+                </select>
 
-				<label for="model">Actor Name:</label>
-				<input type="text" class="form-control" id="actorName" name="actorName" pattern="[A-za-z0-9]{1,}" placeholder="" required>
-            </fieldset>
+                <label for="year">Actor:</label>
+                <select name="idActor" id="idActor">
+                {% for actor in actors %}
+	                <option value={{actor.idActor}}>{{actor.actorName}}</option>
+                {% endfor %}
+                </select>
+		    </fieldset>
 
             <!-- Create 'Add Movie Actors' and 'Cancel' buttons -->
 			<input type="submit" value="Add Movie Actor" name="Add_MovieActor" class="btn btn-primary" style="margin:.5rem;">
