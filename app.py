@@ -567,11 +567,11 @@ def movie_actors():
     # Grab actor data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the actors in Actors along with their counts
-        query1 = """SELECT Movies.idMovie AS 'Movie ID', Movies.movieName AS "Movie Name", Actors.idActor AS 'Actor ID', Actors.actorName AS 'Actor Name'
+        query1 = """SELECT Movies.idMovie AS 'MovieID', Movies.movieName AS "Movie Name", Actors.idActor AS 'ActorID', Actors.actorName AS 'Actor Name'
         FROM Movies
         JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
         JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
-        ORDER BY 'Movie ID' ASC;
+        ORDER BY 'MovieID' ASC;
         """
         cur = mysql.connection.cursor()
         cur.execute(query1)
@@ -591,6 +591,20 @@ def movie_actors():
 
         # render  page movies_has_actors passing our query data
         return render_template("movie_actors.j2", data=data, movies=movie_data, actors=actor_data)
+
+# route for delete functionality, deleting an actor/movie from Actors_has_Movies,
+# we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
+@app.route("/delete_movie_actors/<int:MovieID>/<int:ActorID>")
+def delete_movie_actors(MovieID, ActorID):
+    print(MovieID, ActorID)
+    # mySQL query to delete the director with our passed id
+    query = "DELETE FROM Actors_has_Movies WHERE idMovie = '%s' AND idActor = '%s';"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (MovieID, ActorID))
+    mysql.connection.commit()
+
+    # redirect back to directors page
+    return redirect("/movie_actors")
 
 
 @app.route('/genre_directors', methods=["POST", "GET"])
@@ -615,7 +629,7 @@ def genre_directors():
     # Grab actor data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the actors in Actors along with their counts
-        query1 = """SELECT Directors.idDirector AS 'Director ID', Directors.directorName AS 'Director Name', Genres.idGenre AS 'Genre ID', Genres.genreName AS 'Genre'
+        query1 = """SELECT Directors.idDirector AS 'DirectorID', Directors.directorName AS 'Director Name', Genres.idGenre AS 'GenreID', Genres.genreName AS 'Genre'
         FROM Directors
         JOIN Directors_has_Genres ON Directors.idDirector = Directors_has_Genres.idDirector
         JOIN Genres ON Directors_has_Genres.idGenre = Genres.idGenre
@@ -640,6 +654,21 @@ def genre_directors():
         # render actors page passing our query data
         return render_template("genre_directors.j2", data=data, directors=director_data, genres=genre_data)
 
+# route for delete functionality, deleting a genre director/genre from Directors_has_Genres,
+# we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
+@app.route("/delete_genre_directors/<int:DirectorID>/<int:GenreID>")
+def delete_genre_directors(DirectorID, GenreID):
+    print(DirectorID, GenreID)
+    # mySQL query to delete the director with our passed id
+    query = "DELETE FROM Directors_has_Genres WHERE idDirector = '%s' AND idGenre = '%s';"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (DirectorID, GenreID))
+    mysql.connection.commit()
+
+    # redirect back to directors page
+    return redirect("/genre_directors")
+
+
 @app.route('/genre_actors', methods=["POST", "GET"])
 def genre_actors():
     # Separate out the request methods, in this case this is for a POST
@@ -662,7 +691,7 @@ def genre_actors():
     # Grab actor data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the actors in Actors along with their counts
-        query1 = """SELECT Genres.idGenre AS 'Genre ID', Genres.genreName AS 'Genre', Actors.idActor AS 'Actor ID', Actors.actorName AS 'Actor Name'
+        query1 = """SELECT Genres.idGenre AS 'GenreID', Genres.genreName AS 'Genre', Actors.idActor AS 'ActorID', Actors.actorName AS 'Actor Name'
         FROM Genres
         JOIN Genres_has_Actors ON Genres.idGenre = Genres_has_Actors.idGenre
         JOIN Actors ON Genres_has_Actors.idActor = Actors.idActor
@@ -687,6 +716,19 @@ def genre_actors():
         # render actors page passing our query data
         return render_template("genre_actors.j2", data=data, actors=actor_data, genres=genre_data)
 
+# route for delete functionality, deleting a genre/actor from Genres_has_Actors,
+# we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
+@app.route("/delete_genre_actors/<int:ActorID>/<int:GenreID>")
+def delete_genre_actors(ActorID, GenreID):
+    print("ActorID, GenreID", ActorID, GenreID)
+    # mySQL query to delete the director with our passed id
+    query = "DELETE FROM Genres_has_Actors WHERE idActor = '%s' AND idGenre = '%s';"
+    cur = mysql.connection.cursor()
+    cur.execute(query, (ActorID, GenreID))
+    mysql.connection.commit()
+
+    # redirect back to directors page
+    return redirect("/genre_actors")
 
 """
 @app.route('/bsg-people')
