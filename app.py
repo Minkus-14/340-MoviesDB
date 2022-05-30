@@ -107,6 +107,49 @@ def movies():
             # redirect back to people page
             return redirect("/movies")
 
+        if request.form.get("Search_Movies"):
+            releaseYear = request.form["year"]
+            # mySQL query to grab all the movies in Movies
+            query1 = """SELECT Movies.idMovie AS 'ID', Movies.movieName AS 'Movie name', Movies.releaseYear AS 'Release Year',
+                        Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)', Genres.genreName AS 'Genre', group_concat(Actors.actorName) AS 'Actors',
+                        Directors.directorName AS 'Director Name' 
+                        FROM Movies
+                        LEFT JOIN Genres ON Movies.idGenre = Genres.idGenre
+                        LEFT JOIN Directors ON Movies.idDirector = Directors.idDirector
+                        LEFT JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
+                        LEFT JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
+                        WHERE releaseYear = %s
+                        GROUP BY Movies.movieName
+                        ORDER BY Movies.movieName ASC;"""
+            cur = mysql.connection.cursor()
+            cur.execute(query1, (releaseYear,))
+            data = cur.fetchall()
+
+            # mySQL query to grab director id/name data for our dropdown
+            query2 = "SELECT idDirector, directorName FROM Directors"
+            cur = mysql.connection.cursor()
+            cur.execute(query2)
+            director_data = cur.fetchall()
+
+            # mySQL query to grab genre id/name data for our dropdown
+            query3 = "SELECT idGenre, genreName FROM Genres"
+            cur = mysql.connection.cursor()
+            cur.execute(query3)
+            genre_data = cur.fetchall()
+
+            # mySQL query to year data for our dropdown
+            query4 = """SELECT releaseYear FROM Movies
+                                    ORDER BY releaseYear ASC;"""
+            cur = mysql.connection.cursor()
+            cur.execute(query4)
+            year_data = cur.fetchall()
+
+            # render movies page passing our query data
+            return render_template("movies.j2", data=data, directors=director_data, genres=genre_data, years=year_data)
+
+        if request.form.get("Show_All"):
+            return redirect("/movies")
+
     # Grab movies data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the movies in Movies
@@ -136,8 +179,15 @@ def movies():
         cur.execute(query3)
         genre_data = cur.fetchall()
 
+        # mySQL query to year data for our dropdown
+        query4 = """SELECT releaseYear FROM Movies
+                    ORDER BY releaseYear ASC;"""
+        cur = mysql.connection.cursor()
+        cur.execute(query4)
+        year_data = cur.fetchall()
+
         # render movies page passing our query data
-        return render_template("movies.j2", data=data, directors=director_data, genres=genre_data)
+        return render_template("movies.j2", data=data, directors=director_data, genres=genre_data, years=year_data)
 
 # route for edit functionality, updating the attributes of a movie in Movies
 # similar to our delete route, we want to the pass the 'id' value of that movie on button click (see HTML) via the route
@@ -596,7 +646,6 @@ def movie_actors():
 # we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
 @app.route("/delete_movie_actors/<int:MovieID>/<int:ActorID>")
 def delete_movie_actors(MovieID, ActorID):
-    print(MovieID, ActorID)
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Actors_has_Movies WHERE idMovie = '%s' AND idActor = '%s';"
     cur = mysql.connection.cursor()
@@ -658,7 +707,6 @@ def genre_directors():
 # we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
 @app.route("/delete_genre_directors/<int:DirectorID>/<int:GenreID>")
 def delete_genre_directors(DirectorID, GenreID):
-    print(DirectorID, GenreID)
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Directors_has_Genres WHERE idDirector = '%s' AND idGenre = '%s';"
     cur = mysql.connection.cursor()
@@ -720,7 +768,6 @@ def genre_actors():
 # we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
 @app.route("/delete_genre_actors/<int:ActorID>/<int:GenreID>")
 def delete_genre_actors(ActorID, GenreID):
-    print("ActorID, GenreID", ActorID, GenreID)
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Genres_has_Actors WHERE idActor = '%s' AND idGenre = '%s';"
     cur = mysql.connection.cursor()

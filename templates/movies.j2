@@ -15,27 +15,41 @@
 			document.getElementById('insert').style.display = 'block';
 			document.getElementById('edit').style.display = 'none';
 			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'none';
 		} else if(dowhat == 'update') {
 			document.getElementById('browse').style.display = 'none';
 			document.getElementById('insert').style.display = 'none';
 			document.getElementById('edit').style.display = 'block';
 			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'none';
 		} else if(dowhat == 'delete') {
 			document.getElementById('browse').style.display = 'none';
 			document.getElementById('insert').style.display = 'none';
 			document.getElementById('edit').style.display = 'none';
 			document.getElementById('delete').style.display = 'block';
+			document.getElementById('searchMovies').style.display = 'none';
+		} else if(dowhat == 'searchMovies') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'block';
 		} else if(dowhat == 'all') {
 			document.getElementById('browse').style.display = 'block';
 			document.getElementById('insert').style.display = 'block';
 			document.getElementById('edit').style.display = 'block';
 			document.getElementById('delete').style.display = 'block';
+			document.getElementById('searchMovies').style.display = 'block';
 		} else { //by default display browse
 			document.getElementById('browse').style.display = 'block';
 			document.getElementById('insert').style.display = 'none';
 			document.getElementById('edit').style.display = 'none';
 			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'none';
 		}
+	}
+	function searchMovies() {
+		showform('searchMovies');
 	}
 	function newMovies() {
 		showform('insert');
@@ -59,6 +73,7 @@
 	<h1>Movies</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
 	<div id="browse">
 		<p><a href="#" onClick="newMovies()">Add New</a> </p>
+		<p><a href="#" onClick="searchMovies()">Search Movies by Year</a> </p>
 		<table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
             {% if data %}
@@ -155,19 +170,25 @@
         </form>
 	</div><!--edit-->
 
-{#    <div id="search">#}
-{#		<!-- form to INSERT new data into Movies -->#}
-{#		<form id="searchMovies" action="/movies" method="post">#}
-{#			<legend><strong>Search Movies</strong></legend>#}
-{#			<fieldset>#}
-{#                <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->#}
-{#				<label for="make">Search Query:</label>#}
-{#				<input type="text" class="form-control" id="movieSearch" name="movieSearch" pattern="[A-Za-z\W+]{1,}" placeholder="" required>#}
-{#            </fieldset>#}
-{##}
-{#            <!-- Create 'Add Movie' and 'Cancel' buttons -->#}
-{#			<input type="submit" value="Search Movies" name="Search_Movies" class="btn btn-primary" style="margin:.5rem;">#}
-{#        </form>#}
-{#	</div><!--insert-->#}
+    <div id="searchMovies">
+		<!-- form to SEARCH data in Movies -->
+		<form id="searchMovies" action="/movies" method="post">
+			<legend><strong>Show Movies by Year</strong></legend>
+			<fieldset>
+
+                <label for="year">Year:</label>
+                <select name="year" id="year">
+                <option disabled selected value> Select a Year </option>
+                {% for year in years %}
+                    <option value={{year.releaseYear}}>{{year.releaseYear}}</option>
+                {% endfor %}
+                </select>
+
+            <!-- Create 'Add Movie' and 'Cancel' buttons -->
+			<input type="submit" value="Search Movies" name="Search_Movies" class="btn btn-primary" style="margin:.5rem;">
+			<input type="submit" value="Show All" name="Show_All" class="btn btn-primary" style="margin:.5rem;">
+            </fieldset>
+        </form>
+	</div><!--search-->
 </body>
 </html>
