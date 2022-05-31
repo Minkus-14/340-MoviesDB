@@ -84,8 +84,8 @@
                             {% endfor %}
 
                             <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_actor/{{item.ID}}" class="btn btn-default">Edit</a></td>
-						    <td><a href="delete_actor/{{item.ID}}" class="btn btn-default">Delete</a></td>
+						    <td><a href="edit_actors/{{item.ID}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_actors/{{item.ID}}" class="btn btn-default">Delete</a></td>
 
 					    </tr>
                         {% endfor %}
@@ -115,7 +115,7 @@
 
 	<div id="edit">
 		<!-- form to edit data in Actors-->
-		<form id="editActor" action="/edit_actor/{{data[0].idActor}}" method="post">
+		<form id="editActor" action="/edit_actors/{{data[0].idActor}}" method="post">
 			<legend><strong>Edit Actor</strong></legend>
 			<fieldset>
 				<input type="hidden" value="{{data[0].idActor}}" class="form-control" id="idActor" name="idActor" required>
