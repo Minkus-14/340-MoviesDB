@@ -2,7 +2,7 @@
 <!-- Adapted from the people.html UI design -->
 <head>
 	<title>Movies</title>
-	<link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 	<script language="JavaScript">
 	function showform(dowhat) {
 		/*
@@ -14,27 +14,41 @@
 			document.getElementById('insert').style.display = 'block';
 			document.getElementById('edit').style.display = 'none';
 			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'none';
 		} else if(dowhat == 'update') {
 			document.getElementById('browse').style.display = 'none';
 			document.getElementById('insert').style.display = 'none';
 			document.getElementById('edit').style.display = 'block';
 			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'none';
 		} else if(dowhat == 'delete') {
 			document.getElementById('browse').style.display = 'none';
 			document.getElementById('insert').style.display = 'none';
 			document.getElementById('edit').style.display = 'none';
 			document.getElementById('delete').style.display = 'block';
+			document.getElementById('searchMovies').style.display = 'none';
+		} else if(dowhat == 'searchMovies') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'block';
 		} else if(dowhat == 'all') {
 			document.getElementById('browse').style.display = 'block';
 			document.getElementById('insert').style.display = 'block';
 			document.getElementById('edit').style.display = 'block';
 			document.getElementById('delete').style.display = 'block';
+			document.getElementById('searchMovies').style.display = 'block';
 		} else { //by default display browse
 			document.getElementById('browse').style.display = 'block';
 			document.getElementById('insert').style.display = 'none';
 			document.getElementById('edit').style.display = 'none';
 			document.getElementById('delete').style.display = 'none';
+			document.getElementById('searchMovies').style.display = 'none';
 		}
+	}
+	function searchMovies() {
+		showform('searchMovies');
 	}
 	function newMovies() {
 		showform('insert');
@@ -55,50 +69,19 @@
 </head>
 
 <body onload="browseMovies()">
-	<h1>Movies</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
+	<h1>Search Movies by Year</h1>
+    <p></p>
+    [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> | <a href="search_movies">Search Movies by Year</a> ]
 	<div id="browse">
-		<p><a href="#" onClick="newMovies()">Add New</a> </p>
-        <table border="1" cellpadding="5">
-            <!-- Access data tuple passed from app.py -->
-            {% if data %}
-{#			    <thead>#}
-{#				    <tr>#}
-{#					    <!-- Iterate through each key in the first entry to get the column name -->#}
-{#                        {% for key in data[0].keys() %}#}
-{##}
-{#                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->#}
-{#					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>#}
-{##}
-{#                        <!-- End of this for loop -->#}
-{#                        {% endfor %}#}
-{#                    </tr>#}
-
-				<tbody>
-					<!-- Now, iterate through every item in data -->
-					    <tr>
-                            {% for item in data %}
-						    <!-- Then iterate through every key in the current item dictionary -->
-{#                            {% for key in item.keys() %}#}
-
-						    <!-- Create a <td> element with the value of that key in it -->
-						    <td> {{item.movieName}} </td>
-                            {% endfor %}
-
-                            <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_movies/{{item.ID}}" class="btn btn-default">Edit</a></td>
-						    <td><a href="delete_movies/{{item.ID}}" class="btn btn-default">Delete</a></td>
-
-					    </tr>
-                        {% endfor %}
-                {% endif %}
-        </table>
+        <p>
+        </p>
 		<table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
-            {% if view_data %}
+            {% if data %}
 			    <thead>
 				    <tr>
 					    <!-- Iterate through each key in the first entry to get the column name -->
-                        {% for key in view_data[0].keys() %}
+                        {% for key in data[0].keys() %}
 
                         <!-- Create a <th> tag with the key inside of it, this will be our header row -->
 					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
@@ -108,7 +91,7 @@
                     </tr>
 
 				<tbody>
-					<!-- Now, iterate through every item in data -->{% for item in view_data %}
+					<!-- Now, iterate through every item in data -->{% for item in data %}
 					    <tr>
 						    <!-- Then iterate through every key in the current item dictionary -->
                             {% for key in item.keys() %}
@@ -118,8 +101,8 @@
                             {% endfor %}
 
                             <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_movies/{{item.ID}}" class="btn btn-default">Edit</a></td>
-						    <td><a href="delete_movies/{{item.ID}}" class="btn btn-default">Delete</a></td>
+{#						    <td><a href="edit_movies/{{item.ID}}" class="btn btn-default">Edit</a></td>#}
+{#						    <td><a href="delete_movies/{{item.ID}}" class="btn btn-default">Delete</a></td>#}
 
 					    </tr>
                         {% endfor %}
@@ -128,79 +111,26 @@
 	<p>&nbsp;</p>
 	</div>	<!-- browse -->
 
-	<div id="insert">
-		<!-- form to INSERT new data into Movies -->
-		<form id="insertMovies" action="/movies" method="post">
-			<legend><strong>Add Movie</strong></legend>
-			<fieldset>
-                <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
-				<label for="make">Movie Title:</label>
-				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="" required>
-
-				<label for="model">Release Year:</label>
-				<input type="text" class="form-control" id="releaseYear" name="releaseYear" pattern="[A-Za-z0-9]{1,}" placeholder="" required>
-
-				<label for="model">Rating:</label>
-				<input type="text" class="form-control" id="rating" name="rating" pattern="[A-Za-z0-9]+([\.,]{1,}" step="0.1" placeholder="">
-
-				<label for="model">Movie Length (min):</label>
-				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="">
-
-                <label for="year">Director:</label>
-                <select name="idDirector" id="idDirector">
-                {% for director in directors %}
-	                <option value={{director.idDirector}}>{{director.directorName}}</option>
-                {% endfor %}
-                </select>
-
-                <label for="year">Genre:</label>
-                <select name="idGenre" id="idGenre">
-                {% for genre in genres %}
-	                <option value={{genre.idGenre}}>{{genre.genreName}}</option>
-                {% endfor %}
-                </select>
-
-            </fieldset>
-
-            <!-- Create 'Add Movie' and 'Cancel' buttons -->
-			<input type="submit" value="Add Movies" name="Add_Movies" class="btn btn-primary" style="margin:.5rem;">
-			<input class="btn" type="button" value="Cancel" onClick="browseMovies()">
-        </form>
-	</div><!--insert-->
-
-	<div id="edit">
-		<!-- form to edit data in Movies-->
-		<form id="editMovies" action="/edit_movies/{{view_data[0].idMovie}}" method="post">
-			<legend><strong>Edit Movie</strong></legend>
-			<fieldset>
-				<input type="hidden" value="{{view_data[0].idMovie}}" class="form-control" id="idMovie" name="idMovie" required>
-
-                <label for="make">Movie Title:</label>
-				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" placeholder="{{view_data[0].movieName}}" required>
-
-                <label for="model">Release Year:</label>
-				<input type="text" class="form-control" id="releaseYear" name="releaseYear" pattern="[A-Za-z0-9]{1,}" placeholder="{{view_data[0].releaseYear}}" required>
-
-                <label for="model">Movie Length (min):</label>
-				<input type="text" class="form-control" id="movieLength" name="movieLength" pattern="[A-Za-z0-9]{1,}" placeholder="{{view_data[0].movieLength}}" required>
-
-                <input class="btn" type="button" value="Cancel" onClick="browseMovies()" style="margin:.5rem;">
-        </form>
-	</div><!--edit-->
-
-    <div id="search">
-		<!-- form to INSERT new data into Movies -->
+    <div id="searchMovies">
+		<!-- form to SEARCH data in Movies -->
 		<form id="searchMovies" action="/search_movies" method="post">
-			<legend><strong>Search Movies</strong></legend>
+			<legend><strong>Choose Release Year</strong></legend>
 			<fieldset>
-                <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
-				<label for="make">Search Query:</label>
-				<input type="text" class="form-control" id="movieSearch" name="movieSearch" pattern="[A-Za-z\W+]{1,}" placeholder="" required>
-            </fieldset>
+
+                <label for="year">Year:</label>
+                <select name="year" id="year">
+                <option disabled selected value> Select a Year </option>
+                {% for year in years %}
+                    <option value={{year.releaseYear}}>{{year.releaseYear}}</option>
+                {% endfor %}
+                </select>
 
             <!-- Create 'Add Movie' and 'Cancel' buttons -->
 			<input type="submit" value="Search Movies" name="Search_Movies" class="btn btn-primary" style="margin:.5rem;">
+			<input type="submit" value="Show All" name="Show_All" class="btn btn-primary" style="margin:.5rem;">
+            </fieldset>
         </form>
-	</div><!--insert-->
+	</div><!--search-->
+
 </body>
 </html>

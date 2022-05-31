@@ -1,45 +1,73 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #444;
-}
-/*
- * Formatting the header area
- */
-header {
-  background-color: #DFB887;
-  height: 35px;
-  width: 100%;
-  opacity: .9;
-  margin-bottom: 10px;
-}
-header h1.logo {
-  margin: 0;
-  font-size: 1.7em;
-  color: #fff;
-  text-transform: uppercase;
-  float: left;
-}
-header h1.logo:hover {
-  color: #fff;
+/*IMDb Logo CSS from https://codepen.io/geoffyuen/pen/ZEOZwX*/
+h1 {
+  font: 2em/1 Impact, HelveticaNeue-CondensedBold, sans-serif; // change the font size to whatever
+  color: #000;
+  text-shadow: 0 0 .15em #fff;
   text-decoration: none;
+
+  display: inline-block;
+  vertical-align: bottom;
+  padding: .25em .35em;
+  border-radius: .15em;
+  background: radial-gradient(#ffffb8, #ce981d);
+  }
+
+#new {
+    text-decoration: none;
+    color: #18272F;
+    font-weight: 700;
+    position: relative;font-size: 25px;
+    color: white;
 }
-/*
- * Centering the body content
- */
-.container {
-  width: 1200px;
-  margin: 0 auto;
+
+/*Link CSS from https://blog.prototypr.io/create-stylish-links-with-css-983d33102f5a*/
+a {
+    text-decoration:none;
+    background-color: #009879;
+    color: white;
+    padding: 8px 16px;
+    font-family: sans-serif;
+    border-radius: 3px;
+    font-weight:bold;
 }
-div.home {
-  padding: 10px 0 30px 0;
-  background-color: #E6E6FA;
-  -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
+
+a:hover {
+    background-color: #029e74;
 }
-div.about {
-  padding: 10px 0 30px 0;
-  background-color: #E6E6FA;
-  -web
+
+/*Table CSS from https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l*/
+table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+}
+
+th, td {
+    padding: 12px 15px;
+}
+
+tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+
+tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+}
+
+tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+}

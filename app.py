@@ -12,16 +12,6 @@ from flask_mysqldb import MySQL
 app = Flask(__name__)
 db_connection = db.connect_to_database()
 
-# database connection info
-app.config["MYSQL_HOST"] = "classmysql.engr.oregonstate.edu"
-app.config["MYSQL_USER"] = "cs340_silverbj"
-app.config["MYSQL_PASSWORD"] = "2804"
-app.config["MYSQL_DB"] = "cs340_silverbj"
-app.config["MYSQL_CURSORCLASS"] = "DictCursor"
-
-mysql = MySQL(app)
-
-
 # Routes
 
 @app.route('/')
@@ -47,62 +37,46 @@ def movies():
             if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
                 # mySQL query to insert a new movie into Movie with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, idDirector))
-                mysql.connection.commit()
-
+                
+                db.execute_query(db_connection, query, (movieName, releaseYear, idDirector))
 
             # account for null movieLength and idGenre
             elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
                 # mySQL query to insert a new movie into Movies with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, idDirector))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector))
 
             # account for null rating and movieLength
             elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
                 # mySQL query to insert a new movie into Movies with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, idDirector))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, idDirector))
 
             # account for null rating and idGenre
             elif (rating == "" or rating == "None") and (idGenre == "" or idGenre == "None"):
                 # mySQL query to insert a new movie into Movies with our form inputs
                 query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, movieLength, idDirector))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector))
 
             # account for null rating
             elif rating == "" or rating == "None":
                 query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, movieLength, idDirector))
-                mysql.connection.commit()
-
+                db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector))
+                
             # account for null movieLength
             elif movieLength == "" or movieLength == "None":
                 query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, idDirector))
-                mysql.connection.commit()
-
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector))
+                
             # account for null idGenre
-            elif movieLength == "" or movieLength == "None":
+            elif idGenre == "" or idGenre == "None":
                 query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector) VALUES (%s, %s,%s,%s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector))
-                mysql.connection.commit()
-
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, movieLength, idDirector))
+                
             # no null inputs
             else:
                 query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector, idGenre) VALUES (%s, %s,%s,%s,%s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector, idGenre))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, movieLength, idDirector, idGenre))
 
             # redirect back to people page
             return redirect("/movies")
@@ -121,28 +95,20 @@ def movies():
                         WHERE releaseYear = %s
                         GROUP BY Movies.movieName
                         ORDER BY Movies.movieName ASC;"""
-            cur = mysql.connection.cursor()
-            cur.execute(query1, (releaseYear,))
-            data = cur.fetchall()
+            data = db.execute_query(db_connection, query1, (releaseYear, )).fetchall()
 
             # mySQL query to grab director id/name data for our dropdown
             query2 = "SELECT idDirector, directorName FROM Directors"
-            cur = mysql.connection.cursor()
-            cur.execute(query2)
-            director_data = cur.fetchall()
+            director_data = db.execute_query(db_connection, query2).fetchall()
 
             # mySQL query to grab genre id/name data for our dropdown
             query3 = "SELECT idGenre, genreName FROM Genres"
-            cur = mysql.connection.cursor()
-            cur.execute(query3)
-            genre_data = cur.fetchall()
+            genre_data = db.execute_query(db_connection, query3).fetchall()
 
             # mySQL query to year data for our dropdown
             query4 = """SELECT releaseYear FROM Movies
-                                    ORDER BY releaseYear ASC;"""
-            cur = mysql.connection.cursor()
-            cur.execute(query4)
-            year_data = cur.fetchall()
+                        ORDER BY releaseYear ASC;"""
+            year_data = db.execute_query(db_connection, query4).fetchall()
 
             # render movies page passing our query data
             return render_template("movies.j2", data=data, directors=director_data, genres=genre_data, years=year_data)
@@ -163,28 +129,21 @@ def movies():
         LEFT JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
         GROUP BY Movies.movieName
         ORDER BY Movies.movieName ASC;"""
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
+        
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # mySQL query to grab director id/name data for our dropdown
         query2 = "SELECT idDirector, directorName FROM Directors"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        director_data = cur.fetchall()
+        director_data = db.execute_query(db_connection, query2).fetchall()
 
         # mySQL query to grab genre id/name data for our dropdown
         query3 = "SELECT idGenre, genreName FROM Genres"
-        cur = mysql.connection.cursor()
-        cur.execute(query3)
-        genre_data = cur.fetchall()
+        genre_data = db.execute_query(db_connection, query3).fetchall()
 
         # mySQL query to year data for our dropdown
         query4 = """SELECT releaseYear FROM Movies
                     ORDER BY releaseYear ASC;"""
-        cur = mysql.connection.cursor()
-        cur.execute(query4)
-        year_data = cur.fetchall()
+        year_data = db.execute_query(db_connection, query4).fetchall()
 
         # render movies page passing our query data
         return render_template("movies.j2", data=data, directors=director_data, genres=genre_data, years=year_data)
@@ -196,21 +155,15 @@ def edit_movies(id):
     if request.method == "GET":
         # mySQL query to grab the info of the movie with our passed id
         query = "SELECT * FROM Movies WHERE idMovie = %s" % (id)
-        cur = mysql.connection.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
+        data = db.execute_query(db_connection, query).fetchall()
 
         # mySQL query to grab director id/name data for our dropdown
         query2 = "SELECT idDirector, directorName FROM Directors"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        director_data = cur.fetchall()
+        director_data = db.execute_query(db_connection, query2).fetchall()
 
         # mySQL query to grab genre id/name data for our dropdown
         query3 = "SELECT idGenre, genreName FROM Genres"
-        cur = mysql.connection.cursor()
-        cur.execute(query3)
-        genre_data = cur.fetchall()
+        genre_data = db.execute_query(db_connection, query3).fetchall()
 
         # render edit_movies page passing our query data to the edit_movies template
         return render_template("edit_movies.j2", data=data, directors=director_data, genres=genre_data)
@@ -232,58 +185,42 @@ def edit_movies(id):
             if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None") and (idGenre == "" or idGenre == "None"):
                 # mySQL query to update the attributes of person with our passed id value
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, idDirector, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, idDirector, idMovie))
 
             # account for null rating and idGenre
             elif (rating == "" or rating == "None") and (idGenre == "" or idGenre == "None"):
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.movieLength = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, movieLength, idDirector, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector, idMovie))
 
             # account for null movieLength and idGenre
             elif (idGenre == "" or idGenre == "None") and (movieLength == "" or movieLength == "None"):
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, idDirector, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector, idMovie))
 
             # account for null movieLength and rating
             elif (idGenre == "" or idGenre == "None") and (rating == "" or rating == "None"):
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, idDirector, idGenre, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, idDirector, idGenre, idMovie))
 
             # account for null rating
             elif rating == "" or rating == "None":
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.movieLength = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, movieLength, idDirector, idGenre, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector, idGenre, idMovie))
 
             # account for null movieLength
             elif movieLength == "" or movieLength == "None":
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, idDirector, idGenre, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector, idGenre, idMovie))
 
             # account for null idGenre
             elif movieLength == "" or movieLength == "None":
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.movieLength = %s, Movies.idDirector = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, movieLength, idDirector, idMovie))
 
             # no null inputs
             else:
                 query = "UPDATE Movies SET Movies.movieName = %s, Movies.releaseYear = %s, Movies.rating = %s, Movies.movieLength = %s, Movies.idDirector = %s, Movies.idGenre = %s WHERE Movies.idMovie = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (movieName, releaseYear, rating, movieLength, idDirector, idGenre, idMovie))
-                mysql.connection.commit()
+                db.execute_query(db_connection, query, (movieName, releaseYear, rating, movieLength, idDirector, idGenre, idMovie))
 
             # redirect back to Movies page after we execute the update query
             return redirect("/movies")
@@ -294,9 +231,7 @@ def edit_movies(id):
 def delete_movies(id):
     # mySQL query to delete the movie with our passed id
     query = "DELETE FROM Movies WHERE idMovie = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (id,))
-    mysql.connection.commit()
+    db.execute_query(db_connection, query, (id,))
 
     # redirect back to movie page
     return redirect("/movies")
@@ -305,51 +240,134 @@ def delete_movies(id):
 # we want to pass the 'id' value of that movie on button click (see HTML) via the route
 @app.route("/search_movies", methods=["POST", "GET"])
 def search_movies():
+    # Separate out the request methods, in this case this is for a POST
+    # insert a movie into the Movies entity
     if request.method == "POST":
-        movieSearch = request.form["movieSearch"]
-        query = "SELECT movieName from Movies WHERE movieName LIKE %s"
+        # fire off if user presses the Add Movie button
+        # if request.form.get("Add_Movies"):
+        #     # grab user form inputs
+        #     movieName = request.form["movieName"]
+        #     releaseYear = request.form["releaseYear"]
+        #     rating = request.form["rating"]
+        #     movieLength = request.form["movieLength"]
+        #     idDirector = request.form["idDirector"]
+        #     idGenre = request.form["idGenre"]
+        #
+        #     # account for null rating, movieLength and idGenre
+        #     if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
+        #         # mySQL query to insert a new movie into Movie with our form inputs
+        #         query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
+        #
+        #         db.execute_query(db_connection, query, (movieName, releaseYear, idDirector))
+        #
+        #     # account for null movieLength and idGenre
+        #     elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
+        #         # mySQL query to insert a new movie into Movies with our form inputs
+        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
+        #         db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector))
+        #
+        #     # account for null rating and movieLength
+        #     elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
+        #         # mySQL query to insert a new movie into Movies with our form inputs
+        #         query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
+        #         db.execute_query(db_connection, query, (movieName, releaseYear, idDirector))
+        #
+        #     # account for null rating and idGenre
+        #     elif (rating == "" or rating == "None") and (idGenre == "" or idGenre == "None"):
+        #         # mySQL query to insert a new movie into Movies with our form inputs
+        #         query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
+        #         db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector))
+        #
+        #     # account for null rating
+        #     elif rating == "" or rating == "None":
+        #         query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
+        #         db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector))
+        #
+        #     # account for null movieLength
+        #     elif movieLength == "" or movieLength == "None":
+        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
+        #         db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector))
+        #
+        #     # account for null idGenre
+        #     elif movieLength == "" or movieLength == "None":
+        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector) VALUES (%s, %s,%s,%s,%s)"
+        #         db.execute_query(db_connection, query, (movieName, releaseYear, rating, movieLength, idDirector))
+        #
+        #     # no null inputs
+        #     else:
+        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector, idGenre) VALUES (%s, %s,%s,%s,%s,%s)"
+        #         db.execute_query(db_connection, query,
+        #                          (movieName, releaseYear, rating, movieLength, idDirector, idGenre))
+        #
+        #     # redirect back to people page
+        #     return redirect("/search_movies")
 
-        cur = mysql.connection.cursor()
-        cur.execute(query, (movieSearch))
-        mysql.connection.commit()
-        moviesFound = cur.fetchall()
+        if request.form.get("Search_Movies"):
+            releaseYear = request.form["year"]
+            # mySQL query to grab all the movies in Movies
+            query1 = """SELECT Movies.idMovie AS 'ID', Movies.movieName AS 'Movie name', Movies.releaseYear AS 'Release Year',
+                            Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)', Genres.genreName AS 'Genre', group_concat(Actors.actorName) AS 'Actors',
+                            Directors.directorName AS 'Director Name' 
+                            FROM Movies
+                            LEFT JOIN Genres ON Movies.idGenre = Genres.idGenre
+                            LEFT JOIN Directors ON Movies.idDirector = Directors.idDirector
+                            LEFT JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
+                            LEFT JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
+                            WHERE releaseYear = %s
+                            GROUP BY Movies.movieName
+                            ORDER BY Movies.movieName ASC;"""
+            data = db.execute_query(db_connection, query1, (releaseYear,)).fetchall()
 
-        if len(moviesFound) != 0:
-            return render_template('search_movies.j2', data=moviesFound)
+            # mySQL query to grab director id/name data for our dropdown
+            query2 = "SELECT idDirector, directorName FROM Directors"
+            director_data = db.execute_query(db_connection, query2).fetchall()
 
-        else:
-            return render_template('search_movies.j2')
+            # mySQL query to grab genre id/name data for our dropdown
+            query3 = "SELECT idGenre, genreName FROM Genres"
+            genre_data = db.execute_query(db_connection, query3).fetchall()
 
+            # mySQL query to year data for our dropdown
+            query4 = """SELECT releaseYear FROM Movies
+                            ORDER BY releaseYear ASC;"""
+            year_data = db.execute_query(db_connection, query4).fetchall()
+
+            # render movies page passing our query data
+            return render_template("search_movies.j2", data=data, directors=director_data, genres=genre_data, years=year_data)
+
+        if request.form.get("Show_All"):
+            return redirect("/search_movies")
+
+    # Grab movies data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the movies in Movies
         query1 = """SELECT Movies.idMovie AS 'ID', Movies.movieName AS 'Movie name', Movies.releaseYear AS 'Release Year',
-        Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)', Genres.genreName AS 'Genre', group_concat(Actors.actorName) AS 'Actors',
-        Directors.directorName AS 'Director Name' 
-        FROM Movies
-        LEFT JOIN Genres ON Movies.idGenre = Genres.idGenre
-        LEFT JOIN Directors ON Movies.idDirector = Directors.idDirector
-        LEFT JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
-        LEFT JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
-        GROUP BY Movies.movieName
-        ORDER BY Movies.movieName ASC;"""
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        view_data = cur.fetchall()
+            Movies.rating AS 'Rating', Movies.movieLength AS 'Length (min)', Genres.genreName AS 'Genre', group_concat(Actors.actorName) AS 'Actors',
+            Directors.directorName AS 'Director Name' 
+            FROM Movies
+            LEFT JOIN Genres ON Movies.idGenre = Genres.idGenre
+            LEFT JOIN Directors ON Movies.idDirector = Directors.idDirector
+            LEFT JOIN Actors_has_Movies ON Movies.idMovie = Actors_has_Movies.idMovie
+            LEFT JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
+            GROUP BY Movies.movieName
+            ORDER BY Movies.movieName ASC;"""
+
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # mySQL query to grab director id/name data for our dropdown
         query2 = "SELECT idDirector, directorName FROM Directors"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        director_data = cur.fetchall()
+        director_data = db.execute_query(db_connection, query2).fetchall()
 
         # mySQL query to grab genre id/name data for our dropdown
         query3 = "SELECT idGenre, genreName FROM Genres"
-        cur = mysql.connection.cursor()
-        cur.execute(query3)
-        genre_data = cur.fetchall()
+        genre_data = db.execute_query(db_connection, query3).fetchall()
+
+        # mySQL query to year data for our dropdown
+        query4 = """SELECT releaseYear FROM Movies
+                        ORDER BY releaseYear ASC;"""
+        year_data = db.execute_query(db_connection, query4).fetchall()
 
         # render movies page passing our query data
-        return render_template("search_movies.j2", view_data=view_data, directors=director_data, genres=genre_data)
+        return render_template("search_movies.j2", data=data, directors=director_data, genres=genre_data, years=year_data)
 
 
 @app.route('/directors', methods=["POST", "GET"])
@@ -363,11 +381,8 @@ def directors():
             directorName = request.form["directorName"]
             age = request.form["age"]
 
-
             query = "INSERT INTO Directors (directorName, age) VALUES (%s,%s)"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (directorName, age))
-            mysql.connection.commit()
+            db.execute_query(db_connection, query, (directorName, age))
 
             # redirect back to people page
             return redirect("/directors")
@@ -380,9 +395,8 @@ def directors():
         (SELECT COUNT(idDirector) FROM Directors_has_Genres WHERE Directors_has_Genres.idDirector = Directors.idDirector GROUP BY idDirector) AS '# Genres Directed'
         FROM Directors;
         """
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
+
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # render movies page passing our query data
         return render_template("directors.j2", data=data)
@@ -394,9 +408,7 @@ def edit_directors(id):
     if request.method == "GET":
         # mySQL query to grab the info of the director with our passed id
         query = "SELECT * FROM Directors WHERE idDirector = %s" % (id)
-        cur = mysql.connection.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
+        data = db.execute_query(db_connection, query).fetchall()
 
         # render edit_directors page passing our query data to the edit_directors template
         return render_template("edit_directors.j2", data=data)
@@ -410,11 +422,8 @@ def edit_directors(id):
             directorName = request.form["directorName"]
             age = request.form["age"]
 
-
             query = "UPDATE Directors SET Directors.directorName = %s, Directors.age = %s WHERE Directors.idDirector = %s"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (directorName, age, idDirector))
-            mysql.connection.commit()
+            db.execute_query(db_connection, query, (directorName, age, idDirector))
 
             # redirect back to Directors page after we execute the update query
             return redirect("/directors")
@@ -425,9 +434,7 @@ def edit_directors(id):
 def delete_directors(id):
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Directors WHERE idDirector = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (id,))
-    mysql.connection.commit()
+    db.execute_query(db_connection, query, (id,))
 
     # redirect back to directors page
     return redirect("/directors")
@@ -446,9 +453,7 @@ def actors():
 
 
             query = "INSERT INTO Actors (actorName, age) VALUES (%s,%s)"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (actorName, age))
-            mysql.connection.commit()
+            db.execute_query(db_connection, query, (actorName, age))
 
             # redirect back to actor page
             return redirect("/actors")
@@ -456,14 +461,13 @@ def actors():
     # Grab actor data so we send it to our template to display
     if request.method == "GET":
         # mySQL query to grab all the actors in Actors along with their counts
-        query1 = """SELECT idActor AS 'ID', actorName AS 'Director Name', age AS 'Age',
+        query1 = """SELECT idActor AS 'ID', actorName AS 'Actor Name', age AS 'Age',
         (SELECT COUNT(idActor) FROM Actors_has_Movies WHERE Actors_has_Movies.idActor = Actors.idActor GROUP BY idActor) AS '# of Movies Acted in',
         (SELECT COUNT(idActor) FROM Genres_has_Actors WHERE Genres_has_Actors.idActor = Actors.idActor GROUP BY idActor) AS '# of Genres Acted in'
         FROM Actors;
         """
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
+        
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # render actors page passing our query data
         return render_template("actors.j2", data=data)
@@ -475,9 +479,7 @@ def edit_actors(id):
     if request.method == "GET":
         # mySQL query to grab the info of the actor with our passed id
         query = "SELECT * FROM Actors WHERE idActor = %s" % (id)
-        cur = mysql.connection.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
+        data = db.execute_query(db_connection, query).fetchall()
 
         # render edit_actors page passing our query data to the edit_actors template
         return render_template("edit_actors.j2", data=data)
@@ -491,11 +493,8 @@ def edit_actors(id):
             actorName = request.form["actorName"]
             age = request.form["age"]
 
-
             query = "UPDATE Actors SET Actors.actorName = %s, Actors.age = %s WHERE Actors.idActor = %s"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (actorName, age, idActor))
-            mysql.connection.commit()
+            db.execute_query(db_connection, query, (actorName, age, idActor))
 
             # redirect back to Actors page after we execute the update query
             return redirect("/actors")
@@ -506,9 +505,7 @@ def edit_actors(id):
 def delete_actors(id):
     # mySQL query to delete the actor with our passed id
     query = "DELETE FROM Actors WHERE idActor = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (id))
-    mysql.connection.commit()
+    db.execute_query(db_connection, query, (id,))
 
     # redirect back to actors page
     return redirect("/actors")
@@ -526,12 +523,7 @@ def genres():
             genreName = (genreName,)
 
             query = "INSERT INTO Genres (genreName) VALUES (%s)"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (genreName))
-            mysql.connection.commit()
-
-            # data = (genreName,)
-            # db.execute_query(db_connection, query, data)
+            db.execute_query(db_connection, query, (genreName,))
 
             # redirect back to genres page
             return redirect("/genres")
@@ -543,25 +535,21 @@ def genres():
         (SELECT Count(idGenre) FROM Movies WHERE Movies.idGenre = Genres.idGenre GROUP BY idGenre) AS 'Genre Count'
         FROM Genres;
         """
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
 
-        # data = db.execute_query(db_connection, query1).fetchall()
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # render genres page passing our query data
         return render_template("genres.j2", data=data)
 
 # route for edit functionality, updating the attributes of an genre in Genres
 # similar to our delete route, we want to the pass the 'id' value of that genre on button click (see HTML) via the route
-@app.route("/edit_genres/<int:id>", methods=["POST", "GET"])
+@app.route("/edit_genre/<int:id>", methods=["POST", "GET"])
 def edit_genres(id):
     if request.method == "GET":
         # mySQL query to grab the info of the genre with our passed id
         query = "SELECT * FROM Genres WHERE idGenre = %s" % (id)
-        cur = mysql.connection.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
+
+        data = db.execute_query(db_connection, query).fetchall()
 
         # render edit_genres page passing our query data to the edit_genres template
         return render_template("edit_genres.j2", data=data)
@@ -575,22 +563,19 @@ def edit_genres(id):
             genreName = request.form["genreName"]
 
             query = "UPDATE Genres SET Genres.genreName = %s WHERE Genres.idGenre = %s"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (genreName, idGenre))
-            mysql.connection.commit()
+            
+            db.execute_query(db_connection, query, (genreName, idGenre))
 
             # redirect back to Genres page after we execute the update query
             return redirect("/genres")
 
 # route for delete functionality, deleting an genre from Genres,
 # we want to pass the 'id' value of that actor on button click (see HTML) via the route
-@app.route("/delete_genres/<int:id>")
+@app.route("/delete_genre/<int:id>")
 def delete_genres(id):
     # mySQL query to delete the genre with our passed id
     query = "DELETE FROM Genres WHERE idGenre = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (id))
-    mysql.connection.commit()
+    db.execute_query(db_connection, query, (id,))
 
     # redirect back to genres page
     return redirect("/genres")
@@ -607,11 +592,10 @@ def movie_actors():
             idMovie = request.form["idMovie"]
 
             query = "INSERT INTO Actors_has_Movies (idActor, idMovie) VALUES (%s,%s)"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (idActor, idMovie))
-            mysql.connection.commit()
 
-            # redirect back to actor page
+            db.execute_query(db_connection, query, (idActor, idMovie))
+
+            # redirect back to movie_actors page
             return redirect("/movie_actors")
 
     # Grab actor data so we send it to our template to display
@@ -623,34 +607,28 @@ def movie_actors():
         JOIN Actors ON Actors_has_Movies.idActor = Actors.idActor
         ORDER BY 'MovieID' ASC;
         """
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # mySQL query to grab movie id/name data for our dropdown
         query2 = "SELECT idMovie, movieName FROM Movies"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        movie_data = cur.fetchall()
+
+        movie_data = db.execute_query(db_connection, query2).fetchall()
 
         # mySQL query to grab actor id/name data for our dropdown
         query3 = "SELECT idActor, actorName FROM Actors"
-        cur = mysql.connection.cursor()
-        cur.execute(query3)
-        actor_data = cur.fetchall()
+
+        actor_data = db.execute_query(db_connection, query3).fetchall()
 
         # render  page movies_has_actors passing our query data
         return render_template("movie_actors.j2", data=data, movies=movie_data, actors=actor_data)
 
 # route for delete functionality, deleting an actor/movie from Actors_has_Movies,
 # we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
-@app.route("/delete_movie_actors/<int:MovieID>/<int:ActorID>")
-def delete_movie_actors(MovieID, ActorID):
+@app.route("/delete_movie_actors/<int:idMovie>/<int:idActor>")
+def delete_movie_actors(idMovie, idActor):
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Actors_has_Movies WHERE idMovie = '%s' AND idActor = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (MovieID, ActorID))
-    mysql.connection.commit()
+    db.execute_query(db_connection, query, (idMovie, idActor))
 
     # redirect back to directors page
     return redirect("/movie_actors")
@@ -668,9 +646,7 @@ def genre_directors():
             idDirector = request.form["idDirector"]
 
             query = "INSERT INTO Directors_has_Genres (idGenre, idDirector) VALUES (%s,%s)"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (idGenre, idDirector))
-            mysql.connection.commit()
+            db.execute_query(db_connection, query, (idGenre, idDirector))
 
             # redirect back to actor page
             return redirect("/genre_directors")
@@ -684,34 +660,26 @@ def genre_directors():
         JOIN Genres ON Directors_has_Genres.idGenre = Genres.idGenre
         ORDER BY 'Director ID' ASC;
         """
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # mySQL query to grab director id/name data for our dropdown
         query2 = "SELECT idDirector, directorName FROM Directors"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        director_data = cur.fetchall()
+        director_data = db.execute_query(db_connection, query2).fetchall()
 
         # mySQL query to grab actor id/name data for our dropdown
         query3 = "SELECT idGenre, genreName FROM Genres"
-        cur = mysql.connection.cursor()
-        cur.execute(query3)
-        genre_data = cur.fetchall()
+        genre_data = db.execute_query(db_connection, query3).fetchall()
 
         # render actors page passing our query data
         return render_template("genre_directors.j2", data=data, directors=director_data, genres=genre_data)
 
 # route for delete functionality, deleting a genre director/genre from Directors_has_Genres,
 # we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
-@app.route("/delete_genre_directors/<int:DirectorID>/<int:GenreID>")
-def delete_genre_directors(DirectorID, GenreID):
+@app.route("/delete_genre_directors/<int:idDirector>/<int:idGenre>")
+def delete_genre_directors(idDirector, idGenre):
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Directors_has_Genres WHERE idDirector = '%s' AND idGenre = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (DirectorID, GenreID))
-    mysql.connection.commit()
+    db.execute_query(db_connection, query, (idDirector, idGenre))
 
     # redirect back to directors page
     return redirect("/genre_directors")
@@ -729,9 +697,7 @@ def genre_actors():
             idGenre = request.form["idGenre"]
 
             query = "INSERT INTO Genres_has_Actors (idActor, idGenre) VALUES (%s,%s)"
-            cur = mysql.connection.cursor()
-            cur.execute(query, (idActor, idGenre))
-            mysql.connection.commit()
+            db.execute_query(db_connection, query, (idActor, idGenre))
 
             # redirect back to actor page
             return redirect("/genre_actors")
@@ -745,208 +711,32 @@ def genre_actors():
         JOIN Actors ON Genres_has_Actors.idActor = Actors.idActor
         ORDER BY 'Genre ID' ASC;
         """
-        cur = mysql.connection.cursor()
-        cur.execute(query1)
-        data = cur.fetchall()
+        data = db.execute_query(db_connection, query1).fetchall()
 
         # mySQL query to grab director id/name data for our dropdown
         query2 = "SELECT idActor, actorName FROM Actors"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        actor_data = cur.fetchall()
+        actor_data = db.execute_query(db_connection, query2).fetchall()
 
         # mySQL query to grab actor id/name data for our dropdown
         query3 = "SELECT idGenre, genreName FROM Genres"
-        cur = mysql.connection.cursor()
-        cur.execute(query3)
-        genre_data = cur.fetchall()
+        genre_data = db.execute_query(db_connection, query3).fetchall()
 
         # render actors page passing our query data
         return render_template("genre_actors.j2", data=data, actors=actor_data, genres=genre_data)
 
 # route for delete functionality, deleting a genre/actor from Genres_has_Actors,
 # we want to pass the 'id' value of that movie actor on button click (see HTML) via the route
-@app.route("/delete_genre_actors/<int:ActorID>/<int:GenreID>")
-def delete_genre_actors(ActorID, GenreID):
+@app.route("/delete_genre_actors/<int:idActor>/<int:idGenre>")
+def delete_genre_actors(idActor, idGenre):
     # mySQL query to delete the director with our passed id
     query = "DELETE FROM Genres_has_Actors WHERE idActor = '%s' AND idGenre = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (ActorID, GenreID))
-    mysql.connection.commit()
+    db.execute_query(db_connection, query, (idActor, idGenre))
 
     # redirect back to directors page
     return redirect("/genre_actors")
 
-"""
-@app.route('/bsg-people')
-def bsg_people():
-
-    # Write the query and save it to a variable
-    query = "SELECT * FROM bsg_people;"
-
-    # The way the interface between MySQL and Flask works is by using an
-    # object called a cursor. Think of it as the object that acts as the
-    # person typing commands directly into the MySQL command line and
-    # reading them back to you when it gets results
-    cursor = db.execute_query(db_connection=db_connection, query=query)
-
-    # The cursor.fetchall() function tells the cursor object to return all
-    # the results from the previously executed
-    #
-    # The json.dumps() function simply converts the dictionary that was
-    # returned by the fetchall() call to JSON so we can display it on the
-    # page.
-    results = cursor.fetchall()
-
-    # Sends the results back to the web browser.
-    return render_template("bsg.j2", bsg_people=results)
-
-@app.route('/people', methods=["POST", "GET"])
-def people():
-    # Separate out the request methods, in this case this is for a POST
-    # insert a person into the bsg_people entity
-    if request.method == "POST":
-        # fire off if user presses the Add Person button
-        if request.form.get("Add_Person"):
-            # grab user form inputs
-            fname = request.form["fname"]
-            lname = request.form["lname"]
-            homeworld = request.form["homeworld"]
-            age = request.form["age"]
-
-            # account for null age AND homeworld
-            if age == "" and homeworld == "0":
-                # mySQL query to insert a new person into bsg_people with our form inputs
-                query = "INSERT INTO bsg_people (fname, lname) VALUES (%s, %s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname))
-                mysql.connection.commit()
-
-            # account for null homeworld
-            elif homeworld == "0":
-                query = "INSERT INTO bsg_people (fname, lname, age) VALUES (%s, %s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, age))
-                mysql.connection.commit()
-
-            # account for null age
-            elif age == "":
-                query = "INSERT INTO bsg_people (fname, lname, homeworld) VALUES (%s, %s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, homeworld))
-                mysql.connection.commit()
-
-            # no null inputs
-            else:
-                query = "INSERT INTO bsg_people (fname, lname, homeworld, age) VALUES (%s, %s,%s,%s)"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, homeworld, age))
-                mysql.connection.commit()
-
-            # redirect back to people page
-            return redirect("/people")
-
-    # Grab bsg_people data so we send it to our template to display
-    if request.method == "GET":
-        # mySQL query to grab all the people in bsg_people
-        query = "SELECT bsg_people.id, fname, lname, bsg_planets.name AS homeworld, age FROM bsg_people LEFT JOIN bsg_planets ON homeworld = bsg_planets.id"
-        cur = mysql.connection.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
-
-        # mySQL query to grab planet id/name data for our dropdown
-        query2 = "SELECT id, name FROM bsg_planets"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        homeworld_data = cur.fetchall()
-
-        # render edit_people page passing our query data and homeworld data to the edit_people template
-        return render_template("people.j2", data=data, homeworlds=homeworld_data)
-
-# route for delete functionality, deleting a person from bsg_people,
-# we want to pass the 'id' value of that person on button click (see HTML) via the route
-@app.route("/delete_people/<int:id>")
-def delete_people(id):
-    # mySQL query to delete the person with our passed id
-    query = "DELETE FROM bsg_people WHERE id = '%s';"
-    cur = mysql.connection.cursor()
-    cur.execute(query, (id,))
-    mysql.connection.commit()
-
-    # redirect back to people page
-    return redirect("/people")
-
-# route for edit functionality, updating the attributes of a person in bsg_people
-# similar to our delete route, we want to the pass the 'id' value of that person on button click (see HTML) via the route
-@app.route("/edit_people/<int:id>", methods=["POST", "GET"])
-def edit_people(id):
-    if request.method == "GET":
-        # mySQL query to grab the info of the person with our passed id
-        query = "SELECT * FROM bsg_people WHERE id = %s" % (id)
-        cur = mysql.connection.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
-
-        # mySQL query to grab planet id/name data for our dropdown
-        query2 = "SELECT id, name FROM bsg_planets"
-        cur = mysql.connection.cursor()
-        cur.execute(query2)
-        homeworld_data = cur.fetchall()
-
-        # render edit_people page passing our query data and homeworld data to the edit_people template
-        return render_template("edit_people.j2", data=data, homeworlds=homeworld_data)
-
-    # meat and potatoes of our update functionality
-    if request.method == "POST":
-        # fire off if user clicks the 'Edit Person' button
-        if request.form.get("Edit_Person"):
-            # grab user form inputs
-            id = request.form["personID"]
-            fname = request.form["fname"]
-            lname = request.form["lname"]
-            homeworld = request.form["homeworld"]
-            age = request.form["age"]
-
-            # account for null age AND homeworld
-            if (age == "" or age == "None") and homeworld == "0":
-                # mySQL query to update the attributes of person with our passed id value
-                query = "UPDATE bsg_people SET bsg_people.fname = %s, bsg_people.lname = %s, bsg_people.homeworld = NULL, bsg_people.age = NULL WHERE bsg_people.id = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, id))
-                mysql.connection.commit()
-
-            # account for null homeworld
-            elif homeworld == "0":
-                query = "UPDATE bsg_people SET bsg_people.fname = %s, bsg_people.lname = %s, bsg_people.homeworld = NULL, bsg_people.age = %s WHERE bsg_people.id = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, age, id))
-                mysql.connection.commit()
-
-            # account for null age
-            elif age == "" or age == "None":
-                query = "UPDATE bsg_people SET bsg_people.fname = %s, bsg_people.lname = %s, bsg_people.homeworld = %s, bsg_people.age = NULL WHERE bsg_people.id = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, homeworld, id))
-                mysql.connection.commit()
-
-            # no null inputs
-            else:
-                query = "UPDATE bsg_people SET bsg_people.fname = %s, bsg_people.lname = %s, bsg_people.homeworld = %s, bsg_people.age = %s WHERE bsg_people.id = %s"
-                cur = mysql.connection.cursor()
-                cur.execute(query, (fname, lname, homeworld, age, id))
-                mysql.connection.commit()
-
-            # redirect back to people page after we execute the update query
-            return redirect("/people")
-
-"""
 
 # Listener
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9988, debug=True)
-    # port = int(os.environ.get('PORT', 9988))
-    # #                                 ^^^^
-    # #              You can replace this number with any valid port
-    #
-    # app.run(port=port, debug=True)

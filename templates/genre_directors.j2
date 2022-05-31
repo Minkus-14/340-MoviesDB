@@ -2,7 +2,6 @@
 <!-- Adapted from the people.html UI design -->
 <head>
 	<title>View Genres of Directors</title>
-{#	<link href="style.css" rel="stylesheet" type="text/css" />#}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 	<script language="JavaScript">
 	function showform(dowhat) {
@@ -56,9 +55,11 @@
 </head>
 
 <body onload="browseGenreDirectors()">
-	<h1>Genre Directors</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
+	<h1>Director Genres</h1>
+    <p></p>
+    [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> | <a href="search_movies">Search Movies by Year</a> ]
 	<div id="browse">
-		<p><a href="#" onClick="newGenreDirectors()">Add New</a> </p>
+		<p><a href="#" onClick="newGenreDirectors()" id="new">Add New</a> </p>
 		<table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
             {% if data %}
@@ -85,7 +86,6 @@
                             {% endfor %}
 
                             <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_genre_directors/{{item.ID}}" class="btn btn-default">Edit</a></td>
 						    <td><a href="delete_genre_directors/{{item.DirectorID}}/{{item.GenreID}}" class="btn btn-default">Delete</a></td>
 
 					    </tr>
@@ -98,7 +98,8 @@
 	<div id="insert">
 		<!-- form to INSERT new data into Actors -->
 		<form id="insertGenreDirectors" action="/genre_directors" method="post">
-			<legend><strong>Add Genre Director</strong></legend>
+{#			<legend><strong>Add Genre Director</strong></legend>#}
+            <p></p>
 			<fieldset>
                 <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
 				<label for="year">Director:</label>
@@ -118,7 +119,7 @@
 
             <!-- Create 'Add Movie Actors' and 'Cancel' buttons -->
 			<input type="submit" value="Add Genre Director" name="Add_GenreDirector" class="btn btn-primary" style="margin:.5rem;">
-			<input class="btn" type="button" value="Cancel" onClick="browseMovieActors()">
+			<input class="btn" type="button" value="Cancel" onClick="browseGenreDirectors()">
         </form>
 	</div><!--insert-->
 

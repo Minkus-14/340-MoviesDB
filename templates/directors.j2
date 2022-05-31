@@ -2,7 +2,7 @@
 <!-- Adapted from the people.html UI design -->
 <head>
 	<title>Directors</title>
-	<link href="style.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 	<script language="JavaScript">
 	function showform(dowhat) {
 		/*
@@ -55,9 +55,11 @@
 </head>
 
 <body onload="browseDirectors()">
-	<h1>Directors</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
+	<h1>Directors</h1>
+    <p></p>
+    [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> | <a href="search_movies">Search Movies by Year</a> ]
 	<div id="browse">
-		<p><a href="#" onClick="newDirector()">Add New</a> </p>
+		<p><a href="#" onClick="newDirector()" id="new">Add New</a> </p>
 		<table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
             {% if data %}
@@ -97,7 +99,8 @@
 	<div id="insert">
 		<!-- form to INSERT new data into Directors -->
 		<form id="insertDirector" action="/directors" method="post">
-			<legend><strong>Add Director</strong></legend>
+{#			<legend><strong>Add Director</strong></legend>#}
+            <p></p>
 			<fieldset>
                 <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
 				<label for="make">Director Name:</label>

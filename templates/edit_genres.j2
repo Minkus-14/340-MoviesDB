@@ -2,13 +2,13 @@
 
 <head>
 	<title>Edit Genres</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
     <div>
+        <h1> Editing Genre: </h1>
         <table border="1" cellpadding="5">
-            <caption> Editing Genre: </caption>
             <!-- Access data tuple passed from app.py -->
             {% if data %}
                 <thead>
@@ -39,7 +39,7 @@
 
         <div id="edit">
             <!-- form to edit data in Genres-->
-            <form id="editGenres" action="/edit_genres/{{data[0].idGenre}}" method="post">
+            <form id="editGenres" action="/edit_genre/{{data[0].idGenre}}" method="post">
                 <legend><strong>Edit Genre</strong></legend>
                 <fieldset>
                     <!-- We can preset form inputs to match attributes currently stored for 'idGenre' of genre to be updated via value= and accessing our passed data tuple -->
@@ -49,11 +49,8 @@
                     <label for="make">Genre Name:</label>
                     <input type="text" value="{{data[0].genreName}}" class="form-control" id="genreName" name="genreName" pattern="[A-Za-z\W+]{1,}" required>
 
-                    <label for="model">Age:</label>
-                    <input type="text" value="{{data[0].age}}" class="form-control" id="age" name="age" pattern="[0-9]{1,}" required>
-
                 </fieldset>
                 <input type="submit" value="Edit Genre" name="Edit_Genres" class="btn btn-primary" style="margin:.5rem;">
-                <a href='/genres'><input class="btn" type="button" value="cancel"></a>
+                <a href='/genres'><input class="btn" type="button" value="Cancel"></a>
             </form>
 </html>

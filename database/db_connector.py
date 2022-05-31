@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv, find_dotenv
 
 # Load our environment variables from the .env file in the root of our project.
-load_dotenv(find_dotenv())
+load_dotenv(find_dotenv('.env'))
 
 # Set the variables in our application with those environment variables
 host = os.environ.get("340DBHOST")

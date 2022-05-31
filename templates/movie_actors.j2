@@ -56,9 +56,11 @@
 </head>
 
 <body onload="browseMovieActors()">
-	<h1>Movies</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
+	<h1>Movie Actors</h1>
+    <p></p>
+    [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> | <a href="search_movies">Search Movies by Year</a> ]
 	<div id="browse">
-		<p><a href="#" onClick="newMovieActor()">Add New</a> </p>
+		<p><a href="#" onClick="newMovieActor()" id="new">Add New</a> </p>
 		<table border="1" cellpadding="5">
             <!-- Access data tuple passed from app.py -->
             {% if data %}
@@ -85,7 +87,6 @@
                             {% endfor %}
 
                             <!-- Create our edit/delete buttons -->
-						    <td><a href="edit_movie_actors/{{item.ID}}" class="btn btn-default">Edit</a></td>
 						    <td><a href="delete_movie_actors/{{item.MovieID}}/{{item.ActorID}}" class="btn btn-default">Delete</a></td>
 
 					    </tr>
@@ -98,7 +99,8 @@
 	<div id="insert">
 		<!-- form to INSERT new data into Actors -->
 		<form id="insertMovieActor" action="/movie_actors" method="post">
-			<legend><strong>Add Movie Actor</strong></legend>
+{#			<legend><strong>Add Movie Actor</strong></legend>#}
+            <p></p>
 			<fieldset>
                 <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
 				

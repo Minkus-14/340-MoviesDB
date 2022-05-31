@@ -2,13 +2,13 @@
 
 <head>
 	<title>Edit Actors</title>
-    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
     <div>
+        <h1>Editing Actor:</h1>
         <table border="1" cellpadding="5">
-            <caption> Editing Actor: </caption>
             <!-- Access data tuple passed from app.py -->
             {% if data %}
                 <thead>
