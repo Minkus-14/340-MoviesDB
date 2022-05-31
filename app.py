@@ -243,65 +243,6 @@ def search_movies():
     # Separate out the request methods, in this case this is for a POST
     # insert a movie into the Movies entity
     if request.method == "POST":
-        # fire off if user presses the Add Movie button
-        # if request.form.get("Add_Movies"):
-        #     # grab user form inputs
-        #     movieName = request.form["movieName"]
-        #     releaseYear = request.form["releaseYear"]
-        #     rating = request.form["rating"]
-        #     movieLength = request.form["movieLength"]
-        #     idDirector = request.form["idDirector"]
-        #     idGenre = request.form["idGenre"]
-        #
-        #     # account for null rating, movieLength and idGenre
-        #     if (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
-        #         # mySQL query to insert a new movie into Movie with our form inputs
-        #         query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
-        #
-        #         db.execute_query(db_connection, query, (movieName, releaseYear, idDirector))
-        #
-        #     # account for null movieLength and idGenre
-        #     elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
-        #         # mySQL query to insert a new movie into Movies with our form inputs
-        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
-        #         db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector))
-        #
-        #     # account for null rating and movieLength
-        #     elif (rating == "" or rating == "None") and (movieLength == "" or movieLength == "None"):
-        #         # mySQL query to insert a new movie into Movies with our form inputs
-        #         query = "INSERT INTO Movies (movieName, releaseYear, idDirector) VALUES (%s, %s,%s)"
-        #         db.execute_query(db_connection, query, (movieName, releaseYear, idDirector))
-        #
-        #     # account for null rating and idGenre
-        #     elif (rating == "" or rating == "None") and (idGenre == "" or idGenre == "None"):
-        #         # mySQL query to insert a new movie into Movies with our form inputs
-        #         query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
-        #         db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector))
-        #
-        #     # account for null rating
-        #     elif rating == "" or rating == "None":
-        #         query = "INSERT INTO Movies (movieName, releaseYear, movieLength, idDirector) VALUES (%s, %s,%s,%s)"
-        #         db.execute_query(db_connection, query, (movieName, releaseYear, movieLength, idDirector))
-        #
-        #     # account for null movieLength
-        #     elif movieLength == "" or movieLength == "None":
-        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, idDirector) VALUES (%s, %s,%s,%s)"
-        #         db.execute_query(db_connection, query, (movieName, releaseYear, rating, idDirector))
-        #
-        #     # account for null idGenre
-        #     elif movieLength == "" or movieLength == "None":
-        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector) VALUES (%s, %s,%s,%s,%s)"
-        #         db.execute_query(db_connection, query, (movieName, releaseYear, rating, movieLength, idDirector))
-        #
-        #     # no null inputs
-        #     else:
-        #         query = "INSERT INTO Movies (movieName, releaseYear, rating, movieLength, idDirector, idGenre) VALUES (%s, %s,%s,%s,%s,%s)"
-        #         db.execute_query(db_connection, query,
-        #                          (movieName, releaseYear, rating, movieLength, idDirector, idGenre))
-        #
-        #     # redirect back to people page
-        #     return redirect("/search_movies")
-
         if request.form.get("Search_Movies"):
             releaseYear = request.form["year"]
             # mySQL query to grab all the movies in Movies
@@ -327,8 +268,8 @@ def search_movies():
             genre_data = db.execute_query(db_connection, query3).fetchall()
 
             # mySQL query to year data for our dropdown
-            query4 = """SELECT releaseYear FROM Movies
-                            ORDER BY releaseYear ASC;"""
+            query4 = """SELECT DISTINCT releaseYear FROM Movies
+                        ORDER BY releaseYear ASC;"""
             year_data = db.execute_query(db_connection, query4).fetchall()
 
             # render movies page passing our query data
@@ -362,8 +303,8 @@ def search_movies():
         genre_data = db.execute_query(db_connection, query3).fetchall()
 
         # mySQL query to year data for our dropdown
-        query4 = """SELECT releaseYear FROM Movies
-                        ORDER BY releaseYear ASC;"""
+        query4 = """SELECT DISTINCT releaseYear FROM Movies
+                    ORDER BY releaseYear ASC;"""
         year_data = db.execute_query(db_connection, query4).fetchall()
 
         # render movies page passing our query data
