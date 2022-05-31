@@ -47,7 +47,7 @@
                     <input type="hidden" value="{{data[0].idMovie}}" class="form-control" id="idMovie" name="idMovie" required>
 
                     <label for="make">Movie Title:</label>
-                    <input type="text" value="{{data[0].movieName}}" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z\W+]{1,}" required>
+                    <input type="text" value="{{data[0].movieName}}" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z0-9\W+]{1,}" required>
 
                     <label for="model">Release Year:</label>
                     <input type="text" value="{{data[0].releaseYear}}" class="form-control" id="releaseYear" name="releaseYear" pattern="[A-Za-z0-9]{1,}" required>
@@ -67,6 +67,7 @@
 
                     <label for="year">Genre:</label>
                     <select name="idGenre" id="idGenre">
+                    <option value="">No Genre</option>
                     {% for genre in genres %}
                         <option value={{genre.idGenre}}>{{genre.genreName}}</option>
                     {% endfor %}
