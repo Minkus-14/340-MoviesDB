@@ -1,51 +1,145 @@
 <html>
+<!-- Adapted from the people.html UI design -->
 <head>
-    <style>
-        table, th, td
-        {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 5px;
-        }
-    </style>
-    <title>MoviesDB</title>
+	<title>View Actors in Movies</title>
+	<link href="style.css" rel="stylesheet" type="text/css" />
+	<script language="JavaScript">
+	function showform(dowhat) {
+		/*
+		 * four DIVS: browse, insert, update, delete
+		 * this function sets one visible the others not
+		 */
+		if(dowhat == 'insert') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'update') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'none';
+		} else if(dowhat == 'delete') {
+			document.getElementById('browse').style.display = 'none';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'block';
+		} else if(dowhat == 'all') {
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'block';
+			document.getElementById('edit').style.display = 'block';
+			document.getElementById('delete').style.display = 'block';
+		} else { //by default display browse
+			document.getElementById('browse').style.display = 'block';
+			document.getElementById('insert').style.display = 'none';
+			document.getElementById('edit').style.display = 'none';
+			document.getElementById('delete').style.display = 'none';
+		}
+	}
+	function newMovieActor() {
+		showform('insert');
+	}
+	function updateMovieActor(pid) {
+		showform('update');
+	}
+	function deleteMovieActor(pid) {
+		showform('delete');
+	}
+	function browseMovieActors() {
+		showform('browse');
+	}
+	function showAll() {
+		showform('all');
+	}
+	</script>
 </head>
-<body>
-    <h1>MoviesDB</h1>
-    <h2>Movie Actors</h2>
-    <p>Links to other pages:</p>
-    <p>
-        <a href="{{ url_for('root') }}">Movies</a>
-        <a href="{{ url_for('actors') }}">Actors</a>
-        <a href="{{ url_for('directors') }}">Directors</a>
-        <a href="{{ url_for('genres') }}">Genres</a>
-        <a href="{{ url_for('movie_actors') }}">Movie Actors</a>
-        <a href="{{ url_for('genre_actors') }}">Genre Actors</a>
-        <a href="{{ url_for('genre_directors') }}">Genre Directors</a>
-    </p>
+
+<body onload="browseMovieActors()">
+	<h1>Movies</h1> [ <a href="movies">Movies</a> | <a href="actors">Actors</a> | <a href="directors">Directors</a> | <a href="genres">Genres</a> | <a href="movie_actors">Movie Actors</a> | <a href="genre_directors">Director Genres</a> | <a href="genre_actors">Actor Genres</a> ]
+	<div id="browse">
+		<p><a href="#" onClick="newMovieActor()">Add New</a> </p>
+		<table border="1" cellpadding="5">
+            <!-- Access data tuple passed from app.py -->
+            {% if data %}
+			    <thead>
+				    <tr>
+					    <!-- Iterate through each key in the first entry to get the column name -->
+                        {% for key in data[0].keys() %}
+
+                        <!-- Create a <th> tag with the key inside of it, this will be our header row -->
+					    <th scope="col" data-field="{{ key }}" data-filter-control="input">{{ key }}</th>
+
+                        <!-- End of this for loop -->
+                        {% endfor %}
+                    </tr>
+
+				<tbody>
+					<!-- Now, iterate through every item in data -->{% for item in data %}
+					    <tr>
+						    <!-- Then iterate through every key in the current item dictionary -->
+                            {% for key in item.keys() %}
+
+						    <!-- Create a <td> element with the value of that key in it -->
+						    <td> {{item[key]}} </td>
+                            {% endfor %}
+
+                            <!-- Create our edit/delete buttons -->
+						    <td><a href="edit_movie_actors/{{item.ID}}" class="btn btn-default">Edit</a></td>
+						    <td><a href="delete_movie_actors/{{item.ID}}" class="btn btn-default">Delete</a></td>
+
+					    </tr>
+                        {% endfor %}
+                {% endif %}
+        </table>
+	<p>&nbsp;</p>
+	</div>	<!-- browse -->
+
+	<div id="insert">
+		<!-- form to INSERT new data into Actors -->
+		<form id="insertMovieActor" action="/movie_actors" method="post">
+			<legend><strong>Add Movie Actor</strong></legend>
+			<fieldset>
+                <!-- placeholder shows ghost text, required forces an input, pattern forces input adherence -->
+				
+				<label for="year">Movie:</label>
+                <select name="idMovie" id="idMovie">
+                {% for movie in movies %}
+	                <option value={{movie.idMovie}}>{{movie.movieName}}</option>
+                {% endfor %}
+                </select>
+
+                <label for="year">Actor:</label>
+                <select name="idActor" id="idActor">
+                {% for actor in actors %}
+	                <option value={{actor.idActor}}>{{actor.actorName}}</option>
+                {% endfor %}
+                </select>
+		    </fieldset>
+
+            <!-- Create 'Add Movie Actors' and 'Cancel' buttons -->
+			<input type="submit" value="Add Movie Actor" name="Add_MovieActor" class="btn btn-primary" style="margin:.5rem;">
+			<input class="btn" type="button" value="Cancel" onClick="browseMovieActors()">
+        </form>
+	</div><!--insert-->
+
+	<div id="edit">
+		<!-- form to edit data in Actors-->
+		<form id="editMovieActor" action="/edit_movieactor/{{data[0].idMovieActor}}" method="post">
+			<legend><strong>Edit Movie Actor</strong></legend>
+			<fieldset>
+				<input type="hidden" value="{{data[0].idMovieActor}}" class="form-control" id="idMovieActor" name="idMovieActor" required>
+
+                <label for="make">Movie Name:</label>
+				<input type="text" class="form-control" id="movieName" name="movieName" pattern="[A-Za-z0-9\W+]{1,}" placeholder="{{data[0].movieName}}" required>
+
+                <label for="model">Actor Name:</label>
+				<input type="text" class="form-control" id="actorName" name="actorName" pattern="[A-Za-z0-9]{1,}" placeholder="{{data[0].actorName}}" required>
+
+                <input class="btn" type="button" value="Cancel" onClick="browseMovieActors()" style="margin:.5rem;">
+        </form>
+	</div><!--edit-->
 </body>
-<table>
-    <thead>
-    <tr>
-        <th>Movie ID</th>
-        <th>Movie Name</th>
-        <th>Actor ID</th>
-        <th>Actor Name</th>
-        <th>Edit</th>
-        <th>Delete</th>
-    </tr>
-    <tbody>
-    {% for item in movie_actors %}
-    <tr>
-        <td>{{item['idMovie']}}</td>
-        <td>{{item['movieName']}}</td>
-        <td>{{item['idActor']}}</td>
-        <td>{{item['actorName']}}</td>
-        <td><input type="submit" value="Edit" name="action1"/></td>
-        <td><input type="submit" value="Delete" name="action1"/></td>
-    </tr>
-    {% endfor %}
-</table>
-<input type="submit" value="Add Entry" name="action1"/>
-<input type="submit" value="Remove Entry" name="action1"/>
 </html>
+
+
+
