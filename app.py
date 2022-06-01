@@ -12,6 +12,8 @@ from flask_mysqldb import MySQL
 app = Flask(__name__)
 db_connection = db.connect_to_database()
 
+db_connection.ping(True)
+
 # Routes
 
 @app.route('/')
@@ -680,4 +682,6 @@ def delete_genre_actors(idActor, idGenre):
 # Listener
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=9988, debug=True)
+    # app.run(host="0.0.0.0", port=9988, debug=True)
+    # app.run(host="flip3.engr.oregonstate.edu", port=9988, debug=False)
+    app.run(host="0.0.0.0", port=9988)
